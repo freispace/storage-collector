@@ -1,0 +1,85 @@
+{
+  "productName": "freispace Storage Collector",
+  "version": "0.1.0",
+  "identifier": "com.freispace.storage-collector",
+  "build": {
+    "beforeDevCommand": "pnpm run dev:frontend",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm run build:frontend",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "settings",
+        "title": "Settings — freispace Storage Collector",
+        "url": "settings.html",
+        "width": 900,
+        "height": 600,
+        "minWidth": 700,
+        "minHeight": 500,
+        "resizable": true,
+        "fullscreen": false,
+        "visible": false,
+        "decorations": true,
+        "center": true
+      },
+      {
+        "label": "logs",
+        "title": "Logs — freispace Storage Collector",
+        "url": "logs.html",
+        "width": 900,
+        "height": 500,
+        "minWidth": 600,
+        "minHeight": 400,
+        "resizable": true,
+        "fullscreen": false,
+        "visible": false,
+        "decorations": true,
+        "center": true
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "externalBin": [],
+    "copyright": "",
+    "category": "Utility",
+    "shortDescription": "Monitor folder sizes and submit to freispace",
+    "longDescription": "A background tray application that monitors local folder sizes and submits storage statistics to the freispace API.",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "REPLACE_WITH_TAURI_UPDATER_PUBLIC_KEY",
+      "endpoints": [
+        "https://releases.example.com/freispace-storage-collector/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

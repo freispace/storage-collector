@@ -1,0 +1,11 @@
+{
+  "identifier": "main-capability",
+  "description": "Capability for app windows",
+  "windows": ["settings", "logs"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    "fs:default",
+    "updater:default"
+  ]
+}

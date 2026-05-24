@@ -1,0 +1,36 @@
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Node
+node_modules/
+dist/
+
+# Tauri build output
+src-tauri/target/
+src-tauri/WixTools/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.local
+
+# SQLx offline query cache (committed intentionally — see README)
+# .sqlx/  ← DO NOT ignore, this is needed for CI
+
+# Build artifacts
+*.msi
+*.exe
+*.dmg
+*.deb
+*.AppImage

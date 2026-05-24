@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@layer base {
+  html,
+  body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    height: 100%;
+  }
+}
+
+@plugin "daisyui/theme" {
+  name: "freispace-app";
+  default: false;
+  prefersdark: false;
+  color-scheme: "dark";
+  --color-base-100: oklch(13% 0.028 261.692);
+  --color-base-200: oklch(21% 0.034 264.665);
+  --color-base-300: oklch(27% 0.033 256.848);
+  --color-base-content: oklch(96% 0.003 264.542);
+  --color-primary: #007ac9;
+  --color-primary-content: oklch(97% 0.014 308.299);
+  --color-secondary: #ff9421;
+  --color-secondary-content: oklch(97% 0.013 17.38);
+  --color-accent: #fed766;
+  --color-accent-content: oklch(13.6% 0.016 73.684);
+  --color-neutral: #585563;
+  --color-neutral-content: oklch(98% 0.002 247.839);
+  --color-info: #51e5ff;
+  --color-info-content: oklch(7.4% 0.013 236.620);
+  --color-success: oklch(76% 0.233 130.85);
+  --color-success-content: oklch(98% 0.031 120.757);
+  --color-warning: #ff9421;
+  --color-warning-content: oklch(98% 0.026 102.212);
+  --color-error: #fe4a49;
+  --color-error-content: oklch(97% 0.014 343.198);
+  --radius-selector: 2rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.21875rem;
+  --border: 1.5px;
+  --depth: 1;
+  --noise: 0;
+}

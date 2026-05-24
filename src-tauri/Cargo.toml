@@ -1,0 +1,83 @@
+[package]
+name    = "freispace-storage-collector"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name       = "freispace_storage_collector_lib"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[[bin]]
+name = "freispace-storage-collector"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri core
+tauri = { version = "2", features = ["tray-icon", "image-png", "image-ico"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
+
+# Type-safe TypeScript binding generation
+# NOTE: tauri-specta and specta require exact version pinning
+tauri-specta      = { version = "=2.0.0-rc.25", features = ["derive", "typescript"] }
+specta            = { version = "=2.0.0-rc.25" }
+specta-typescript = "=0.0.12"
+
+# Database
+sqlx = { version = "0.8", features = [
+    "sqlite",
+    "macros",
+    "migrate",
+    "runtime-tokio",
+    "chrono",
+] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Scheduler
+tokio-cron-scheduler = { version = "0.13" }
+
+# HTTP client (rustls-tls = no OpenSSL dependency on any platform)
+reqwest = { version = "0.12", default-features = false, features = [
+    "json",
+    "rustls-tls",
+] }
+
+# Filesystem walking
+walkdir = "2"
+
+# Icon compositing for tray error badge
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+# Serialization
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Time / IDs
+chrono = { version = "0.4", features = ["serde"] }
+uuid   = { version = "1",   features = ["v4", "serde"] }
+
+# Error handling
+thiserror = "2"
+
+# Logging (Rust internal tracing, separate from DB log_entries table)
+tracing            = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[features]
+default         = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+strip         = true
+opt-level     = "z"
+lto           = true
+codegen-units = 1
+panic         = "abort"
