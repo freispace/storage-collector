@@ -4,11 +4,13 @@
   import { logsStore } from "$lib/stores/logs.svelte";
   import LogsTab from "./components/logs/LogsTab.svelte";
 
-  onMount(async () => {
-    const unlisten = await onLogEntry((entry: LogEntry) => {
+  onMount(() => {
+    const unlistenPromise = onLogEntry((entry: LogEntry) => {
       logsStore.addEntry(entry);
     });
-    return unlisten;
+    return () => {
+      unlistenPromise.then((unlisten) => unlisten());
+    };
   });
 </script>
 
