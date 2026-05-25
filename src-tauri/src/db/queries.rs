@@ -145,6 +145,24 @@ pub async fn set_storage_project_enabled(
     Ok(())
 }
 
+pub async fn remove_storage_project(
+    pool: &SqlitePool,
+    storage_id: &str,
+    project_id: &str,
+) -> Result<(), AppError> {
+    sqlx::query("DELETE FROM folder_configs WHERE storage_id = ? AND project_id = ?")
+        .bind(storage_id)
+        .bind(project_id)
+        .execute(pool)
+        .await?;
+    sqlx::query("DELETE FROM storage_project_settings WHERE storage_id = ? AND project_id = ?")
+        .bind(storage_id)
+        .bind(project_id)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
 // ── Pending submissions ───────────────────────────────────────────────────────
 
 pub async fn insert_pending_submission(

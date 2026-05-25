@@ -69,6 +69,18 @@ pub async fn set_storage_project_enabled(
     queries::set_storage_project_enabled(&state.pool, &storage_id, &project_id, enabled).await
 }
 
+#[tauri::command]
+#[specta::specta]
+pub async fn remove_storage_project(
+    state: State<'_, Arc<AppState>>,
+    storage_id: String,
+    project_id: String,
+) -> Result<(), AppError> {
+    queries::remove_storage_project(&state.pool, &storage_id, &project_id).await?;
+    rebuild_scheduler(&state).await?;
+    Ok(())
+}
+
 async fn rebuild_scheduler(state: &Arc<AppState>) -> Result<(), AppError> {
     let mut sched_guard = state.scheduler.lock().await;
     if let Some(mut old) = sched_guard.take() {

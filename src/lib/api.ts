@@ -162,6 +162,9 @@ export const api = {
 
   setStorageProjectEnabled: (storageId: string, projectId: string, enabled: boolean) =>
     invoke<null>("set_storage_project_enabled", { storageId, projectId, enabled }),
+
+  removeStorageProject: (storageId: string, projectId: string) =>
+    invoke<null>("remove_storage_project", { storageId, projectId }),
 };
 
 // ── Events ───────────────────────────────────────────────────────────────────

@@ -100,7 +100,7 @@
     >
       Storage Projects
     </button>
-    <div class="tab-content bg-base-100 border-base-300 p-6">
+    <div class="tab-content bg-base-100 border-base-300">
       {#if !settingsStore.loaded}
         <div
           class="flex-1 flex items-center justify-center text-gray-500 font-medium text-xl"
@@ -108,9 +108,7 @@
           <LoadingText />
         </div>
       {:else}
-        <div class="flex-1 overflow-hidden">
-          <StorageProjectList globalSchedule={settingsStore.globalSchedule} />
-        </div>
+        <StorageProjectList globalSchedule={settingsStore.globalSchedule} />
       {/if}
     </div>
 

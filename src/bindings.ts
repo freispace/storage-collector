@@ -24,6 +24,7 @@ export const commands = {
 	pickFolder: () => typedError<string | null, string>(__TAURI_INVOKE("pick_folder")),
 	listStorageProjectSettings: () => typedError<StorageProjectSetting[], string>(__TAURI_INVOKE("list_storage_project_settings")),
 	setStorageProjectEnabled: (storageId: string, projectId: string, enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("set_storage_project_enabled", { storageId, projectId, enabled })),
+	removeStorageProject: (storageId: string, projectId: string) => typedError<null, string>(__TAURI_INVOKE("remove_storage_project", { storageId, projectId })),
 	triggerAll: () => typedError<null, string>(__TAURI_INVOKE("trigger_all")),
 	triggerStorageProject: (storageId: string, projectId: string) => typedError<null, string>(__TAURI_INVOKE("trigger_storage_project", { storageId, projectId })),
 	listLogEntries: (levelFilter: string | null, limit: number, offset: number) => typedError<LogEntry[], string>(__TAURI_INVOKE("list_log_entries", { levelFilter, limit, offset })),
