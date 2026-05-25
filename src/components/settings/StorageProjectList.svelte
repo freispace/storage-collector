@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { api, type FolderConfig, type StorageProjectItem } from "$lib/api";
+  import { api, type FolderConfig, type StorageProjectItem, type StorageProjectSetting } from "$lib/api";
   import { namesStore } from "$lib/stores/names.svelte";
   import StorageProjectRow from "./StorageProjectRow.svelte";
   import LoadingText from "../general/loadingText.svelte";
@@ -13,6 +13,7 @@
 
   let items = $state<StorageProjectItem[]>([]);
   let folderConfigs = $state<FolderConfig[]>([]);
+  let projectSettings = $state<StorageProjectSetting[]>([]);
   let nextLink = $state<string | null>(null);
   let currentPage = $state(1);
   let loading = $state(false);
@@ -25,13 +26,15 @@
     error = null;
 
     try {
-      const [result, configs] = await Promise.all([
+      const [result, configs, settings] = await Promise.all([
         api.fetchStorageProjectsPage(page),
         page === 1 ? api.listFolderConfigs() : Promise.resolve(folderConfigs),
+        page === 1 ? api.listStorageProjectSettings() : Promise.resolve(projectSettings),
       ]);
 
       items = append ? [...items, ...result.data] : result.data;
       folderConfigs = configs as FolderConfig[];
+      projectSettings = settings as StorageProjectSetting[];
       nextLink = result.pagination_links?.next ?? null;
       currentPage = page;
     } catch (e) {
@@ -55,11 +58,23 @@
     folderConfigs = await api.listFolderConfigs();
   }
 
+  async function refreshSettings() {
+    projectSettings = await api.listStorageProjectSettings();
+  }
+
   function getConfigsForItem(item: StorageProjectItem): FolderConfig[] {
     return folderConfigs.filter(
       (fc) =>
         fc.storage_id === item.storage_id && fc.project_id === item.project_id,
     );
+  }
+
+  function isItemEnabled(item: StorageProjectItem): boolean {
+    if (!item.storage_id || !item.project_id) return true;
+    const setting = projectSettings.find(
+      (s) => s.storage_id === item.storage_id && s.project_id === item.project_id,
+    );
+    return setting?.enabled ?? true;
   }
 
   onMount(() => {
@@ -97,6 +112,8 @@
           {globalSchedule}
           names={namesStore.names}
           onConfigsChanged={refreshConfigs}
+          enabled={isItemEnabled(item)}
+          onEnabledChanged={refreshSettings}
         />
       {/each}
     </div>

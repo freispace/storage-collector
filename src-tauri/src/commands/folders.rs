@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 use crate::{
-    db::{models::{FolderConfig, FolderConfigInput}, queries},
+    db::{models::{FolderConfig, FolderConfigInput, StorageProjectSetting}, queries},
     error::AppError,
     AppState,
     scheduler,
@@ -48,6 +48,25 @@ pub async fn pick_folder(app_handle: AppHandle) -> Result<Option<String>, AppErr
         .blocking_pick_folder();
 
     Ok(path.map(|p| p.to_string()))
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn list_storage_project_settings(
+    state: State<'_, Arc<AppState>>,
+) -> Result<Vec<StorageProjectSetting>, AppError> {
+    queries::list_storage_project_settings(&state.pool).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn set_storage_project_enabled(
+    state: State<'_, Arc<AppState>>,
+    storage_id: String,
+    project_id: String,
+    enabled: bool,
+) -> Result<(), AppError> {
+    queries::set_storage_project_enabled(&state.pool, &storage_id, &project_id, enabled).await
 }
 
 async fn rebuild_scheduler(state: &Arc<AppState>) -> Result<(), AppError> {

@@ -9,9 +9,11 @@
     globalSchedule: string;
     names: Map<string, string>;
     onConfigsChanged: () => void;
+    enabled: boolean;
+    onEnabledChanged: () => void;
   }
 
-  let { item, folderConfigs, globalSchedule, names, onConfigsChanged }: Props =
+  let { item, folderConfigs, globalSchedule, names, onConfigsChanged, enabled, onEnabledChanged }: Props =
     $props();
 
   let running = $state(false);
@@ -79,10 +81,21 @@
       running = false;
     }
   }
+
+  async function toggleEnabled() {
+    if (!item.storage_id || !item.project_id) return;
+    error = null;
+    try {
+      await api.setStorageProjectEnabled(item.storage_id, item.project_id, !enabled);
+      onEnabledChanged();
+    } catch (e) {
+      error = String(e);
+    }
+  }
 </script>
 
-<div class="card card-border bg-base-100 px-4 py-3 space-y-3">
-  <!-- Header row: names/IDs + Run button -->
+<div class="card card-border bg-base-100 px-4 py-3 space-y-3" class:opacity-60={!enabled}>
+  <!-- Header row: names/IDs + controls -->
   <div class="flex items-start justify-between gap-2">
     <h1>
       {labelFor("P", item.project_id, projectName)} &ndash; {labelFor(
@@ -92,23 +105,33 @@
       )}
     </h1>
     {#if folderConfigs.length > 0}
-      <button
-        class="shrink-0 btn btn-success btn-xs"
-        onclick={runNow}
-        disabled={running || !item.storage_id || !item.project_id}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          class="size-4"
-        >
-          <path
-            d="M3 3.732a1.5 1.5 0 0 1 2.305-1.265l6.706 4.267a1.5 1.5 0 0 1 0 2.531l-6.706 4.268A1.5 1.5 0 0 1 3 12.267V3.732Z"
+      <div class="flex items-center gap-2 shrink-0">
+        <label class="flex items-center gap-1.5 cursor-pointer" title={enabled ? "Disable auto-update" : "Enable auto-update"}>
+          <input
+            type="checkbox"
+            class="toggle toggle-xs"
+            checked={enabled}
+            onchange={toggleEnabled}
           />
-        </svg>
-        <span>{running ? "…" : "Run"}</span>
-      </button>
+        </label>
+        <button
+          class="btn btn-success btn-xs"
+          onclick={runNow}
+          disabled={running || !item.storage_id || !item.project_id}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="size-4"
+          >
+            <path
+              d="M3 3.732a1.5 1.5 0 0 1 2.305-1.265l6.706 4.267a1.5 1.5 0 0 1 0 2.531l-6.706 4.268A1.5 1.5 0 0 1 3 12.267V3.732Z"
+            />
+          </svg>
+          <span>{running ? "…" : "Run"}</span>
+        </button>
+      </div>
     {/if}
   </div>
 

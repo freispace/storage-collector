@@ -71,6 +71,14 @@ pub struct CachedEntityName {
     pub name: Option<String>,
 }
 
+/// Enabled/disabled state for a storage-project pair.
+#[derive(Debug, Clone, Serialize, Deserialize, Type, sqlx::FromRow)]
+pub struct StorageProjectSetting {
+    pub storage_id: String,
+    pub project_id: String,
+    pub enabled: bool,
+}
+
 /// A single log entry.
 #[derive(Debug, Clone, Serialize, Deserialize, Type, sqlx::FromRow)]
 pub struct LogEntry {

@@ -2,7 +2,7 @@ use sqlx::{SqlitePool, Row};
 use chrono::Utc;
 use uuid::Uuid;
 
-use super::models::{CachedEntityName, FolderConfig, FolderConfigInput, LogEntry, LogLevel, PendingSubmission};
+use super::models::{CachedEntityName, FolderConfig, FolderConfigInput, LogEntry, LogLevel, PendingSubmission, StorageProjectSetting};
 use crate::error::AppError;
 
 // ── Settings ─────────────────────────────────────────────────────────────────
@@ -114,6 +114,35 @@ pub async fn folder_configs_for_storage_project(
     .fetch_all(pool)
     .await?;
     Ok(rows)
+}
+
+// ── Storage project settings ──────────────────────────────────────────────────
+
+pub async fn list_storage_project_settings(pool: &SqlitePool) -> Result<Vec<StorageProjectSetting>, AppError> {
+    let rows = sqlx::query_as::<_, StorageProjectSetting>(
+        "SELECT storage_id, project_id, enabled FROM storage_project_settings",
+    )
+    .fetch_all(pool)
+    .await?;
+    Ok(rows)
+}
+
+pub async fn set_storage_project_enabled(
+    pool: &SqlitePool,
+    storage_id: &str,
+    project_id: &str,
+    enabled: bool,
+) -> Result<(), AppError> {
+    sqlx::query(
+        "INSERT INTO storage_project_settings (storage_id, project_id, enabled) VALUES (?, ?, ?) \
+         ON CONFLICT(storage_id, project_id) DO UPDATE SET enabled = excluded.enabled",
+    )
+    .bind(storage_id)
+    .bind(project_id)
+    .bind(enabled)
+    .execute(pool)
+    .await?;
+    Ok(())
 }
 
 // ── Pending submissions ───────────────────────────────────────────────────────

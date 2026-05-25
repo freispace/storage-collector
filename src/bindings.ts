@@ -22,6 +22,8 @@ export const commands = {
 	upsertFolderConfig: (input: FolderConfigInput) => typedError<FolderConfig, string>(__TAURI_INVOKE("upsert_folder_config", { input })),
 	deleteFolderConfig: (id: string) => typedError<null, string>(__TAURI_INVOKE("delete_folder_config", { id })),
 	pickFolder: () => typedError<string | null, string>(__TAURI_INVOKE("pick_folder")),
+	listStorageProjectSettings: () => typedError<StorageProjectSetting[], string>(__TAURI_INVOKE("list_storage_project_settings")),
+	setStorageProjectEnabled: (storageId: string, projectId: string, enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("set_storage_project_enabled", { storageId, projectId, enabled })),
 	triggerAll: () => typedError<null, string>(__TAURI_INVOKE("trigger_all")),
 	triggerStorageProject: (storageId: string, projectId: string) => typedError<null, string>(__TAURI_INVOKE("trigger_storage_project", { storageId, projectId })),
 	listLogEntries: (levelFilter: string | null, limit: number, offset: number) => typedError<LogEntry[], string>(__TAURI_INVOKE("list_log_entries", { levelFilter, limit, offset })),
@@ -125,6 +127,13 @@ export type StorageProjectItem = {
 	project_id: string | null,
 	storage_size_estimated: number | null,
 	storage_size_current: number | null,
+};
+
+/**  Enabled/disabled state for a storage-project pair. */
+export type StorageProjectSetting = {
+	storage_id: string,
+	project_id: string,
+	enabled: boolean,
 };
 
 /* Tauri Specta runtime */

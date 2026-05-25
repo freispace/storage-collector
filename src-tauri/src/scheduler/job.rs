@@ -34,15 +34,37 @@ pub async fn run_tick(state: &Arc<AppState>, scope: RunScope) -> Result<(), AppE
     }
 
     // Load the relevant folder configs
-    let configs = match &scope {
+    let (configs, is_specific) = match &scope {
         RunScope::AllAtTime(time) => {
             let global = queries::get_setting(&state.pool, "global_schedule_time").await?;
-            queries::folder_configs_for_schedule(&state.pool, time, &global).await?
+            let cfgs = queries::folder_configs_for_schedule(&state.pool, time, &global).await?;
+            (cfgs, false)
         }
         RunScope::Specific { storage_id, project_id } => {
-            queries::folder_configs_for_storage_project(&state.pool, storage_id, project_id).await?
+            let cfgs = queries::folder_configs_for_storage_project(&state.pool, storage_id, project_id).await?;
+            (cfgs, true)
         }
-        RunScope::All => queries::list_folder_configs(&state.pool).await?,
+        RunScope::All => {
+            let cfgs = queries::list_folder_configs(&state.pool).await?;
+            (cfgs, false)
+        }
+    };
+
+    // For non-manual runs, skip storage-project pairs that have been disabled
+    let configs = if is_specific {
+        configs
+    } else {
+        let disabled: std::collections::HashSet<(String, String)> =
+            queries::list_storage_project_settings(&state.pool)
+                .await?
+                .into_iter()
+                .filter(|s| !s.enabled)
+                .map(|s| (s.storage_id.clone(), s.project_id.clone()))
+                .collect();
+        configs
+            .into_iter()
+            .filter(|c| !disabled.contains(&(c.storage_id.clone(), c.project_id.clone())))
+            .collect()
     };
 
     if configs.is_empty() {

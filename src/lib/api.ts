@@ -79,6 +79,12 @@ export interface CachedEntityName {
   name: string | null;
 }
 
+export interface StorageProjectSetting {
+  storage_id: string;
+  project_id: string;
+  enabled: boolean;
+}
+
 // ── Commands ─────────────────────────────────────────────────────────────────
 
 export const api = {
@@ -150,6 +156,12 @@ export const api = {
 
   getEntityNames: () =>
     invoke<CachedEntityName[]>("get_entity_names"),
+
+  listStorageProjectSettings: () =>
+    invoke<StorageProjectSetting[]>("list_storage_project_settings"),
+
+  setStorageProjectEnabled: (storageId: string, projectId: string, enabled: boolean) =>
+    invoke<null>("set_storage_project_enabled", { storageId, projectId, enabled }),
 };
 
 // ── Events ───────────────────────────────────────────────────────────────────
