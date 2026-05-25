@@ -2,14 +2,15 @@ pub mod icons;
 
 use std::sync::Arc;
 use tauri::{
-    menu::{Menu, MenuItem},
+    menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     AppHandle, Manager,
 };
 use tokio::sync::Mutex;
 
 use icons::TrayIcons;
-use crate::error::AppError;
+use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
+use crate::{error::AppError, scheduler::job::{run_tick, RunScope}};
 
 /// The five visual states the tray icon can be in.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -73,14 +74,20 @@ pub fn build_tray(
     app: &AppHandle,
     icons: TrayIcons,
 ) -> Result<Arc<Mutex<TrayManager>>, AppError> {
+    let run_all_item = MenuItem::with_id(app, "run_all_now", "Run All Now", true, None::<&str>)
+        .map_err(|e| AppError::Config(e.to_string()))?;
+    let sep1 = PredefinedMenuItem::separator(app)
+        .map_err(|e| AppError::Config(e.to_string()))?;
     let settings_item = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)
         .map_err(|e| AppError::Config(e.to_string()))?;
     let logs_item = MenuItem::with_id(app, "logs", "Logs", true, None::<&str>)
         .map_err(|e| AppError::Config(e.to_string()))?;
+    let sep2 = PredefinedMenuItem::separator(app)
+        .map_err(|e| AppError::Config(e.to_string()))?;
     let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)
         .map_err(|e| AppError::Config(e.to_string()))?;
 
-    let menu = Menu::with_items(app, &[&settings_item, &logs_item, &quit_item])
+    let menu = Menu::with_items(app, &[&run_all_item, &sep1, &settings_item, &logs_item, &sep2, &quit_item])
         .map_err(|e| AppError::Config(e.to_string()))?;
 
     let idle_icon = icons.idle.clone();
@@ -93,9 +100,30 @@ pub fn build_tray(
         .on_menu_event({
             let app = app.clone();
             move |_, event| match event.id().as_ref() {
+                "run_all_now" => {
+                    let state = app.state::<Arc<crate::AppState>>();
+                    let state = Arc::clone(&state);
+                    tauri::async_runtime::spawn(async move {
+                        let _ = run_tick(&state, RunScope::All).await;
+                    });
+                }
                 "settings" => show_named_window(&app, "settings"),
                 "logs" => show_named_window(&app, "logs"),
-                "quit" => app.exit(0),
+                "quit" => {
+                    let app_clone = app.clone();
+                    app.dialog()
+                        .message("Do you want to quit freispace Storage Collector? Background tasks will not be executed until you start the app again.")
+                        .title("Quit?")
+                        .buttons(MessageDialogButtons::OkCancelCustom(
+                            "Quit".into(),
+                            "Cancel".into(),
+                        ))
+                        .show(move |confirmed| {
+                            if confirmed {
+                                app_clone.exit(0);
+                            }
+                        });
+                }
                 _ => {}
             }
         })

@@ -7,7 +7,7 @@ mod scheduler;
 mod tray;
 
 use std::sync::Arc;
-use tauri::{Manager, RunEvent};
+use tauri::Manager;
 use tokio::sync::Mutex;
 use tokio_cron_scheduler::JobScheduler;
 
@@ -141,11 +141,7 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error building Tauri application");
 
-    app.run(|_app_handle, event| {
-        if let RunEvent::ExitRequested { api, .. } = event {
-            api.prevent_exit();
-        }
-    });
+    app.run(|_app_handle, _event| {});
 }
 
 #[cfg(debug_assertions)]
