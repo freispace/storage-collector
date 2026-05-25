@@ -9,7 +9,7 @@ use crate::{
 #[tauri::command]
 #[specta::specta]
 pub async fn trigger_all(state: State<'_, Arc<AppState>>) -> Result<(), AppError> {
-    run_tick(&*state, RunScope::All).await
+    run_tick(&state, RunScope::All).await
 }
 
 #[tauri::command]
@@ -20,7 +20,7 @@ pub async fn trigger_storage_project(
     project_id: String,
 ) -> Result<(), AppError> {
     run_tick(
-        &*state,
+        &state,
         RunScope::Specific { storage_id, project_id },
     )
     .await

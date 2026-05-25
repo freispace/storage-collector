@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use tauri::State;
+use tauri_plugin_autostart::ManagerExt;
 use crate::{db::queries, error::AppError, AppState, scheduler};
 
 #[tauri::command]
@@ -28,7 +29,7 @@ pub async fn set_global_schedule(
 ) -> Result<(), AppError> {
     validate_hhmm(&time)?;
     queries::set_setting(&state.pool, "global_schedule_time", &time).await?;
-    rebuild_scheduler(&*state).await
+    rebuild_scheduler(&state).await
 }
 
 #[tauri::command]
@@ -45,7 +46,7 @@ pub async fn set_scheduler_auto_run(
     enabled: bool,
 ) -> Result<(), AppError> {
     queries::set_setting(&state.pool, "scheduler_auto_run", &enabled.to_string()).await?;
-    rebuild_scheduler(&*state).await
+    rebuild_scheduler(&state).await
 }
 
 fn validate_hhmm(time: &str) -> Result<(), AppError> {
@@ -69,4 +70,23 @@ async fn rebuild_scheduler(state: &Arc<AppState>) -> Result<(), AppError> {
     let new_sched = scheduler::setup_scheduler(Arc::clone(state)).await?;
     *sched_guard = Some(new_sched);
     Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_launch_at_startup(app: tauri::AppHandle) -> Result<bool, AppError> {
+    app.autolaunch()
+        .is_enabled()
+        .map_err(|e| AppError::Config(e.to_string()))
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn set_launch_at_startup(app: tauri::AppHandle, enabled: bool) -> Result<(), AppError> {
+    if enabled {
+        app.autolaunch().enable()
+    } else {
+        app.autolaunch().disable()
+    }
+    .map_err(|e| AppError::Config(e.to_string()))
 }

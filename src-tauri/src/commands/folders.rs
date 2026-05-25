@@ -22,7 +22,7 @@ pub async fn upsert_folder_config(
     input: FolderConfigInput,
 ) -> Result<FolderConfig, AppError> {
     let config = queries::upsert_folder_config(&state.pool, &input).await?;
-    rebuild_scheduler(&*state).await?;
+    rebuild_scheduler(&state).await?;
     Ok(config)
 }
 
@@ -33,7 +33,7 @@ pub async fn delete_folder_config(
     id: String,
 ) -> Result<(), AppError> {
     queries::delete_folder_config(&state.pool, &id).await?;
-    rebuild_scheduler(&*state).await?;
+    rebuild_scheduler(&state).await?;
     Ok(())
 }
 

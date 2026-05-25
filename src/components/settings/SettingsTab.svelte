@@ -38,8 +38,10 @@
     <GlobalSchedule
       schedule={settingsStore.globalSchedule}
       autoRun={settingsStore.schedulerAutoRun}
+      launchAtStartup={settingsStore.launchAtStartup}
       onScheduleChange={(t) => settingsStore.setGlobalSchedule(t)}
       onAutoRunChange={(v) => settingsStore.setSchedulerAutoRun(v)}
+      onLaunchAtStartupChange={(v) => settingsStore.setLaunchAtStartup(v)}
     />
 
     <div class="flex items-center gap-3">

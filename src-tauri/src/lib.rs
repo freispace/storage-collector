@@ -36,6 +36,10 @@ pub fn run() {
     export_bindings();
 
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ))
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             for label in ["settings", "logs"] {
                 if let Some(window) = app.get_webview_window(label) {
@@ -110,6 +114,8 @@ pub fn run() {
             commands::settings::set_global_schedule,
             commands::settings::get_scheduler_auto_run,
             commands::settings::set_scheduler_auto_run,
+            commands::settings::get_launch_at_startup,
+            commands::settings::set_launch_at_startup,
             commands::projects::fetch_projects_page,
             commands::projects::fetch_storages_page,
             commands::projects::fetch_storage_projects_page,
@@ -152,6 +158,8 @@ fn export_bindings() {
             commands::settings::set_global_schedule,
             commands::settings::get_scheduler_auto_run,
             commands::settings::set_scheduler_auto_run,
+            commands::settings::get_launch_at_startup,
+            commands::settings::set_launch_at_startup,
             commands::projects::fetch_projects_page,
             commands::projects::fetch_storages_page,
             commands::projects::fetch_storage_projects_page,

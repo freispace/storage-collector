@@ -5,11 +5,13 @@
   interface Props {
     schedule: string;
     autoRun: boolean;
+    launchAtStartup: boolean;
     onScheduleChange: (time: string) => void;
     onAutoRunChange: (enabled: boolean) => void;
+    onLaunchAtStartupChange: (enabled: boolean) => void;
   }
 
-  let { schedule, autoRun, onScheduleChange, onAutoRunChange }: Props = $props();
+  let { schedule, autoRun, launchAtStartup, onScheduleChange, onAutoRunChange, onLaunchAtStartupChange }: Props = $props();
 
   let timeValue = $state(untrack(() => schedule));
   let saving = $state(false);
@@ -40,6 +42,16 @@
     try {
       await api.setSchedulerAutoRun(checked);
       onAutoRunChange(checked);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function toggleLaunchAtStartup(e: Event) {
+    const checked = (e.target as HTMLInputElement).checked;
+    try {
+      await api.setLaunchAtStartup(checked);
+      onLaunchAtStartupChange(checked);
     } catch (err) {
       console.error(err);
     }
@@ -80,5 +92,15 @@
       onchange={toggleAutoRun}
     />
     <span class="text-sm text-gray-300">Run automatically at scheduled time</span>
+  </label>
+
+  <label class="flex items-center gap-2 cursor-pointer">
+    <input
+      type="checkbox"
+      class="w-4 h-4 rounded bg-gray-700 border-gray-600"
+      checked={launchAtStartup}
+      onchange={toggleLaunchAtStartup}
+    />
+    <span class="text-sm text-gray-300">Launch at system startup</span>
   </label>
 </div>

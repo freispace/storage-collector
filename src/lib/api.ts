@@ -94,6 +94,12 @@ export const api = {
   setSchedulerAutoRun: (enabled: boolean) =>
     invoke<null>("set_scheduler_auto_run", { enabled }),
 
+  getLaunchAtStartup: () =>
+    invoke<boolean>("get_launch_at_startup"),
+
+  setLaunchAtStartup: (enabled: boolean) =>
+    invoke<null>("set_launch_at_startup", { enabled }),
+
   fetchProjectsPage: (page: number) =>
     invoke<PaginatedResponse<FreispaceProject>>("fetch_projects_page", { page }),
 
@@ -118,11 +124,11 @@ export const api = {
   triggerAll: () =>
     invoke<null>("trigger_all"),
 
-  triggerStorageProject: (storage_id: string, project_id: string) =>
-    invoke<null>("trigger_storage_project", { storage_id, project_id }),
+  triggerStorageProject: (storageId: string, projectId: string) =>
+    invoke<null>("trigger_storage_project", { storageId, projectId }),
 
-  listLogEntries: (level_filter: string | null, limit: number, offset: number) =>
-    invoke<LogEntry[]>("list_log_entries", { level_filter, limit, offset }),
+  listLogEntries: (levelFilter: string | null, limit: number, offset: number) =>
+    invoke<LogEntry[]>("list_log_entries", { levelFilter, limit, offset }),
 
   clearLogEntries: () =>
     invoke<null>("clear_log_entries"),

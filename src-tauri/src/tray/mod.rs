@@ -73,12 +73,14 @@ pub fn build_tray(
     app: &AppHandle,
     icons: TrayIcons,
 ) -> Result<Arc<Mutex<TrayManager>>, AppError> {
-    let show_item = MenuItem::with_id(app, "show", "Show Window", true, None::<&str>)
+    let settings_item = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)
+        .map_err(|e| AppError::Config(e.to_string()))?;
+    let logs_item = MenuItem::with_id(app, "logs", "Logs", true, None::<&str>)
         .map_err(|e| AppError::Config(e.to_string()))?;
     let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)
         .map_err(|e| AppError::Config(e.to_string()))?;
 
-    let menu = Menu::with_items(app, &[&show_item, &quit_item])
+    let menu = Menu::with_items(app, &[&settings_item, &logs_item, &quit_item])
         .map_err(|e| AppError::Config(e.to_string()))?;
 
     let idle_icon = icons.idle.clone();
@@ -91,7 +93,8 @@ pub fn build_tray(
         .on_menu_event({
             let app = app.clone();
             move |_, event| match event.id().as_ref() {
-                "show" => show_window(&app),
+                "settings" => show_named_window(&app, "settings"),
+                "logs" => show_named_window(&app, "logs"),
                 "quit" => app.exit(0),
                 _ => {}
             }
@@ -105,7 +108,7 @@ pub fn build_tray(
                     ..
                 } = event
                 {
-                    show_window(&app);
+                    show_named_window(&app, "settings");
                 }
             }
         })
@@ -121,12 +124,10 @@ pub fn build_tray(
     Ok(Arc::new(Mutex::new(manager)))
 }
 
-fn show_window(app: &AppHandle) {
-    for label in ["settings", "logs"] {
-        if let Some(window) = app.get_webview_window(label) {
-            let _ = window.show();
-            let _ = window.set_focus();
-            let _ = window.unminimize();
-        }
+fn show_named_window(app: &AppHandle, label: &str) {
+    if let Some(window) = app.get_webview_window(label) {
+        let _ = window.show();
+        let _ = window.set_focus();
+        let _ = window.unminimize();
     }
 }
