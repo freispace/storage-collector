@@ -3,6 +3,7 @@
   import { api } from "$lib/api";
   import { logsStore } from "$lib/stores/logs.svelte";
   import { namesStore } from "$lib/stores/names.svelte";
+  import { formatDate } from "$lib/utils";
   import LogFilter from "./LogFilter.svelte";
   import LogList from "./LogList.svelte";
 
@@ -29,6 +30,21 @@
       clearing = false;
     }
   }
+
+  const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
+
+  async function exportLogs() {
+    const lines = logsStore.filteredEntries.map((e) => {
+      const msg = e.message.replace(UUID_RE, (id) => {
+        const name = namesStore.lookup(id);
+        return name ? `${name} (${id})` : id;
+      });
+      return `[${formatDate(e.created_at)}] [${e.level.toUpperCase()}] ${msg}`;
+    });
+
+    const filter = logsStore.levelFilter ? `_${logsStore.levelFilter}` : "";
+    await api.saveLogFile(lines.join("\n"), `logs${filter}.txt`);
+  }
 </script>
 
 <div class="flex flex-col h-full">
@@ -37,13 +53,22 @@
       filter={logsStore.levelFilter}
       onFilterChange={(f) => logsStore.setFilter(f)}
     />
-    <button
-      class="btn"
-      onclick={clearLogs}
-      disabled={clearing}
-    >
-      Clear
-    </button>
+    <div class="flex gap-2">
+      <button
+        class="btn"
+        onclick={exportLogs}
+        disabled={logsStore.filteredEntries.length === 0}
+      >
+        Export
+      </button>
+      <button
+        class="btn"
+        onclick={clearLogs}
+        disabled={clearing}
+      >
+        Clear
+      </button>
+    </div>
   </div>
   {#if loading}
     <div class="flex-1 flex items-center justify-center text-gray-500 font-medium text-xl">

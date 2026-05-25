@@ -139,6 +139,9 @@ export const api = {
   clearLogEntries: () =>
     invoke<null>("clear_log_entries"),
 
+  saveLogFile: (content: string, defaultName: string) =>
+    invoke<boolean>("save_log_file", { content, defaultName }),
+
   syncEntityNames: () =>
     invoke<null>("sync_entity_names"),
 

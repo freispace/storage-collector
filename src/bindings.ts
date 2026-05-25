@@ -26,6 +26,7 @@ export const commands = {
 	triggerStorageProject: (storageId: string, projectId: string) => typedError<null, string>(__TAURI_INVOKE("trigger_storage_project", { storageId, projectId })),
 	listLogEntries: (levelFilter: string | null, limit: number, offset: number) => typedError<LogEntry[], string>(__TAURI_INVOKE("list_log_entries", { levelFilter, limit, offset })),
 	clearLogEntries: () => typedError<null, string>(__TAURI_INVOKE("clear_log_entries")),
+	saveLogFile: (content: string, defaultName: string) => typedError<boolean, string>(__TAURI_INVOKE("save_log_file", { content, defaultName })),
 };
 
 /** Events */

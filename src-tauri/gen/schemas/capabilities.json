@@ -1,1 +1,1 @@
-{"main-capability":{"identifier":"main-capability","description":"Capability for app windows","local":true,"windows":["settings","logs"],"permissions":["core:default","dialog:allow-open","fs:default","updater:default"]}}
+{"main-capability":{"identifier":"main-capability","description":"Capability for app windows","local":true,"windows":["settings","logs"],"permissions":["core:default","dialog:allow-open","dialog:allow-save","fs:default","updater:default"]}}
