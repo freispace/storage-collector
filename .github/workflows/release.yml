@@ -64,6 +64,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SQLX_OFFLINE: "true"
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "freispace Storage Collector ${{ github.ref_name }}"

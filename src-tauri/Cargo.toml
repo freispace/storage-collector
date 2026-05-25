@@ -72,6 +72,13 @@ thiserror = "2"
 tracing            = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+# Error reporting
+# DSN is baked in at compile time via SENTRY_DSN env var; omit to disable.
+# `panic` integration fires in debug builds only (release uses panic = "abort").
+sentry = { version = "0.34", default-features = false, features = [
+    "backtrace", "contexts", "panic", "reqwest", "rustls", "transport",
+] }
+
 [features]
 default         = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]

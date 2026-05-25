@@ -35,6 +35,14 @@ pub fn run() {
     #[cfg(debug_assertions)]
     export_bindings();
 
+    // DSN is baked in at compile time: SENTRY_DSN=https://...@sentry.io/... cargo build
+    // If the env var is absent the guard is a no-op and Sentry stays disabled.
+    let _sentry_guard = sentry::init(sentry::ClientOptions {
+        dsn: option_env!("SENTRY_DSN").and_then(|s| s.parse().ok()),
+        release: sentry::release_name!(),
+        ..Default::default()
+    });
+
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
