@@ -106,6 +106,9 @@ export const api = {
   setLaunchAtStartup: (enabled: boolean) =>
     invoke<null>("set_launch_at_startup", { enabled }),
 
+  showLogsWindow: () =>
+    invoke<null>("show_logs_window"),
+
   fetchProjectsPage: (page: number) =>
     invoke<PaginatedResponse<FreispaceProject>>("fetch_projects_page", { page }),
 

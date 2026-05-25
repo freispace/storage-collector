@@ -25,7 +25,9 @@
       await api.setApiKey(inputValue);
       onChange(inputValue);
       saved = true;
-      setTimeout(() => { saved = false; }, 2000);
+      setTimeout(() => {
+        saved = false;
+      }, 2000);
     } catch (e) {
       error = String(e);
     } finally {
@@ -34,15 +36,20 @@
   }
 </script>
 
-<div class="space-y-2">
-  <label for="api-key-input" class="block text-xs font-medium text-gray-400 uppercase tracking-wide">freispace API Key</label>
-  <div class="text-gray-400">
+<div>
+  <label for="api-key-input" class="fieldset-legend">freispace API Key</label>
+  <div class="text-gray-400 mb-2">
     The API key requires the following permissions:
-    <span class="badge badge-sm font-mono">Projects : View</span> <span class="badge badge-sm font-mono">Storages : Update</span>
+    <span class="badge badge-sm font-mono">Projects : View</span>
+    <span class="badge badge-sm font-mono">Storages : Update</span>
   </div>
   <div class="flex gap-2">
     <div class="input flex-1 max-w-135">
-      <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <svg
+        class="h-[1em] opacity-50"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
         <g
           stroke-linejoin="round"
           stroke-linecap="round"
@@ -61,14 +68,12 @@
         type="password"
         placeholder="freispace API key"
         bind:value={inputValue}
-        onkeydown={(e) => { if (e.key === "Enter") save(); }}
+        onkeydown={(e) => {
+          if (e.key === "Enter") save();
+        }}
       />
     </div>
-    <button
-      class="btn btn-primary"
-      onclick={save}
-      disabled={saving}
-    >
+    <button class="btn btn-primary" onclick={save} disabled={saving}>
       {saving ? "Saving…" : saved ? "Saved!" : "Save"}
     </button>
   </div>

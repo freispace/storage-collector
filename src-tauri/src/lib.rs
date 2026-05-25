@@ -130,6 +130,7 @@ pub fn run() {
             commands::logs::list_log_entries,
             commands::logs::clear_log_entries,
             commands::logs::save_log_file,
+            commands::settings::show_logs_window,
         ])
         .on_window_event(|window, event| {
             // Hide to tray instead of quitting when window close button is clicked
@@ -173,6 +174,7 @@ fn export_bindings() {
             commands::logs::list_log_entries,
             commands::logs::clear_log_entries,
             commands::logs::save_log_file,
+            commands::settings::show_logs_window,
         ])
         .events(collect_events![LogEntryEvent, SchedulerTickEvent])
         .export(Typescript::default(), "../src/bindings.ts")

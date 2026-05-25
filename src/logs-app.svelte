@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { onLogEntry, type LogEntry } from "$lib/api";
   import { logsStore } from "$lib/stores/logs.svelte";
-  import LogsTab from "./components/logs/LogsTab.svelte";
+  import Logs from "./components/logs/Logs.svelte";
 
   onMount(() => {
     const unlistenPromise = onLogEntry((entry: LogEntry) => {
@@ -14,6 +14,6 @@
   });
 </script>
 
-<div class="flex flex-col h-screen bg-gray-900 text-gray-100 text-sm select-none">
-  <LogsTab />
+<div class="flex flex-col h-screen bg-gray-800 text-gray-100 text-sm select-none">
+  <Logs />
 </div>

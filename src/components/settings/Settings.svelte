@@ -5,6 +5,7 @@
   import ApiKeyInput from "./ApiKeyInput.svelte";
   import GlobalSchedule from "./GlobalSchedule.svelte";
   import StorageProjectList from "./StorageProjectList.svelte";
+  import LoadingText from "../general/loadingText.svelte";
 
   let activeTab = $state<"settings" | "projects" | "info">("settings");
   let running = $state(false);
@@ -104,7 +105,7 @@
         <div
           class="flex-1 flex items-center justify-center text-gray-500 font-medium text-xl"
         >
-          <span class="loading loading-infinity loading-xl me-1"></span> Loading…
+          <LoadingText />
         </div>
       {:else}
         <div class="flex-1 overflow-hidden">
@@ -121,7 +122,7 @@
     </button>
     <div class="tab-content bg-base-100 border-base-300 p-6">
       <svg
-        class="max-w-48 mt-4 mb-8"
+        class="max-w-48 mt-4 mb-6"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 2339 422"
@@ -146,7 +147,10 @@
         ></svg
       >
       <p>Version 0.1</p>
-      <p>Copyright © 2026 freispace GmbH</p>
+      <p>© Leonardo Re, freispace GmbH</p>
+      <button class="btn mt-4" onclick={() => api.showLogsWindow()}
+        >Show logs</button
+      >
     </div>
   </div>
 </div>

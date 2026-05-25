@@ -14,12 +14,12 @@
   ];
 </script>
 
-<div role="tablist" class="tabs tabs-box">
+<div class="join">
   {#each levels as level}
     <button
-      class="tab
+      class="join-item btn
         {filter === level.value
-          ? 'tab-active'
+          ? 'btn-primary'
           : ''}"
       onclick={() => onFilterChange(level.value)}
     >

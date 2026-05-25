@@ -81,30 +81,33 @@
   }
 </script>
 
-<div class="border border-gray-700 rounded p-3 space-y-2">
+<div class="card card-border bg-base-100 px-4 py-3 space-y-3">
   <!-- Header row: names/IDs + Run button -->
   <div class="flex items-start justify-between gap-2">
-    <div class="flex flex-col gap-1 text-xs min-w-0">
-      <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 truncate max-w-60"
-        title={item.storage_id ?? ""}
-      >
-        S: {labelFor("S", item.storage_id, storageName)}
-      </span>
-      <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 truncate max-w-60"
-        title={item.project_id ?? ""}
-      >
-        P: {labelFor("P", item.project_id, projectName)}
-      </span>
-    </div>
+    <h1>
+      {labelFor("P", item.project_id, projectName)} &ndash; {labelFor(
+        "S",
+        item.storage_id,
+        storageName,
+      )}
+    </h1>
     {#if folderConfigs.length > 0}
       <button
         class="shrink-0 btn btn-success btn-xs"
         onclick={runNow}
         disabled={running || !item.storage_id || !item.project_id}
       >
-        {running ? "…" : "Run"}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="size-4"
+        >
+          <path
+            d="M3 3.732a1.5 1.5 0 0 1 2.305-1.265l6.706 4.267a1.5 1.5 0 0 1 0 2.531l-6.706 4.268A1.5 1.5 0 0 1 3 12.267V3.732Z"
+          />
+        </svg>
+        <span>{running ? "…" : "Run"}</span>
       </button>
     {/if}
   </div>

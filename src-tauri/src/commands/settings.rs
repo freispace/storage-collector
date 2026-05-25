@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use tauri::State;
+use tauri::{Manager, State};
 use tauri_plugin_autostart::ManagerExt;
 use crate::{db::queries, error::AppError, AppState, scheduler};
 
@@ -76,6 +76,17 @@ async fn rebuild_scheduler(state: &Arc<AppState>) -> Result<(), AppError> {
     }
     let new_sched = scheduler::setup_scheduler(Arc::clone(state)).await?;
     *sched_guard = Some(new_sched);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn show_logs_window(app: tauri::AppHandle) -> Result<(), AppError> {
+    if let Some(window) = app.get_webview_window("logs") {
+        let _ = window.show();
+        let _ = window.set_focus();
+        let _ = window.unminimize();
+    }
     Ok(())
 }
 

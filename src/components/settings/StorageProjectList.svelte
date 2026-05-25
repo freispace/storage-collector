@@ -3,6 +3,7 @@
   import { api, type FolderConfig, type StorageProjectItem } from "$lib/api";
   import { namesStore } from "$lib/stores/names.svelte";
   import StorageProjectRow from "./StorageProjectRow.svelte";
+  import LoadingText from "../general/loadingText.svelte";
 
   interface Props {
     globalSchedule: string;
@@ -68,19 +69,19 @@
 
 <div class="h-full overflow-y-auto space-y-2">
   <div class="flex items-center justify-between">
-    <span class="text-xs font-medium text-gray-400 uppercase tracking-wide">
-      Storage Projects
-    </span>
-    <button
-      class="text-xs text-gray-500 hover:text-gray-300"
-      onclick={() => loadPage(1)}
-    >
-      Refresh
+    <button class="btn btn-ghost" onclick={() => loadPage(1)}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24"
+        ><path
+          fill="currentColor"
+          d="M12 20q-3.35 0-5.675-2.325T4 12t2.325-5.675T12 4q1.725 0 3.3.712T18 6.75V4h2v7h-7V9h4.2q-.8-1.4-2.187-2.2T12 6Q9.5 6 7.75 7.75T6 12t1.75 4.25T12 18q1.925 0 3.475-1.1T17.65 14h2.1q-.7 2.65-2.85 4.325T12 20"
+        /></svg
+      >
+      <span>Refresh list</span>
     </button>
   </div>
 
   {#if loading}
-    <div class="text-center text-gray-500 py-4 text-sm">Loading…</div>
+    <div class="text-center py-4"><LoadingText /></div>
   {:else if error}
     <div class="text-sm text-red-400 bg-red-900/20 rounded p-2">{error}</div>
   {:else if items.length === 0}
@@ -102,8 +103,7 @@
 
     {#if nextLink !== null}
       <button
-        class="w-full py-2 text-sm text-gray-400 bg-gray-800 rounded hover:bg-gray-700
-               disabled:opacity-50"
+        class="btn btn-block"
         onclick={() => loadPage(currentPage + 1, true)}
         disabled={loadingMore}
       >

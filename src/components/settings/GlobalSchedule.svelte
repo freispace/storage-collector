@@ -21,8 +21,6 @@
   }: Props = $props();
 
   let timeValue = $state(untrack(() => schedule));
-  let saving = $state(false);
-  let saved = $state(false);
   let error = $state<string | null>(null);
 
   $effect(() => {
@@ -30,19 +28,12 @@
   });
 
   async function saveSchedule() {
-    saving = true;
     error = null;
     try {
       await api.setGlobalSchedule(timeValue);
       onScheduleChange(timeValue);
-      saved = true;
-      setTimeout(() => {
-        saved = false;
-      }, 2000);
     } catch (e) {
       error = String(e);
-    } finally {
-      saving = false;
     }
   }
 
@@ -67,55 +58,38 @@
   }
 </script>
 
-<div class="space-y-3">
-  <div class="space-y-2">
-    <label class="flex items-center gap-2 cursor-pointer">
-      <input
-        type="checkbox"
-        class="toggle"
-        checked={launchAtStartup}
-        onchange={toggleLaunchAtStartup}
-      />
-      <span class="text-sm text-gray-300">Launch at system startup</span>
-    </label>
+<div>
+  <label class="flex items-center gap-2 cursor-pointer">
+    <input
+      type="checkbox"
+      class="toggle"
+      checked={launchAtStartup}
+      onchange={toggleLaunchAtStartup}
+    />
+    <span class="text-sm text-gray-300">Launch at system startup</span>
+  </label>
 
-    <label class="flex items-center gap-2 cursor-pointer">
-      <input
-        type="checkbox"
-        class="toggle"
-        checked={autoRun}
-        onchange={toggleAutoRun}
-      />
-      <span class="text-sm text-gray-300"
-        >Run automatically at scheduled time</span
-      >
-    </label>
+  <label class="flex items-center gap-2 cursor-pointer mt-5">
+    <input
+      type="checkbox"
+      class="toggle"
+      checked={autoRun}
+      onchange={toggleAutoRun}
+    />
+    <span class="text-sm text-gray-300"
+      >Run automatically at scheduled time</span
+    >
+  </label>
 
-    <div class="pt-4">
-      <label
-        for="global-schedule-input"
-        class="block text-xs font-medium text-gray-400 uppercase tracking-wide"
-      >
-        Global Schedule (daily)
-      </label>
-      <p>Time that all storage projects should be updated</p>
-      <div class="flex gap-2 items-center">
-        <input
-          id="global-schedule-input"
-          type="time"
-          class="bg-gray-800 border border-gray-600 rounded px-3 py-1.5 text-sm text-gray-100
-                focus:outline-none focus:border-blue-500"
-          bind:value={timeValue}
-        />
-        <button
-          class="btn btn-md btn-primary"
-          onclick={saveSchedule}
-          disabled={saving}
-        >
-          {saving ? "Saving…" : saved ? "Saved!" : "Save"}
-        </button>
-      </div>
-    </div>
+  <div class="pl-12 pt-3">
+    <input
+      id="global-schedule-input"
+      type="time"
+      class="input w-28"
+      bind:value={timeValue}
+      onblur={saveSchedule}
+      disabled={!autoRun}
+    />
     {#if error}
       <p class="text-xs text-red-400">{error}</p>
     {/if}
