@@ -144,7 +144,7 @@
       await api.setStorageProjectEnabled(
         item.storage_id,
         item.project_id,
-        false,
+        true,
       );
       projectSettings = await api.listStorageProjectSettings();
       selectedItemId = "";

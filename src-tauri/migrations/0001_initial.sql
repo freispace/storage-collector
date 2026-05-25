@@ -50,3 +50,20 @@ CREATE INDEX IF NOT EXISTS idx_folder_configs_sp ON folder_configs (storage_id, 
 CREATE INDEX IF NOT EXISTS idx_pending_created   ON pending_submissions (created_at);
 CREATE INDEX IF NOT EXISTS idx_log_level         ON log_entries (level);
 CREATE INDEX IF NOT EXISTS idx_log_created       ON log_entries (created_at DESC);
+
+-- Cached storage and project names fetched from the freispace API.
+-- Updated incrementally using updated_since to avoid re-fetching unchanged entries.
+CREATE TABLE IF NOT EXISTS entity_names (
+    entity_type TEXT NOT NULL CHECK (entity_type IN ('storage', 'project')),
+    entity_id   TEXT NOT NULL,
+    name        TEXT,
+    fetched_at  TEXT NOT NULL,
+    PRIMARY KEY (entity_type, entity_id)
+);
+
+CREATE TABLE IF NOT EXISTS storage_project_settings (
+    storage_id TEXT NOT NULL,
+    project_id TEXT NOT NULL,
+    enabled    INTEGER NOT NULL DEFAULT 1,
+    PRIMARY KEY (storage_id, project_id)
+);

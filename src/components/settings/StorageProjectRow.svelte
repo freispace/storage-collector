@@ -202,24 +202,26 @@
     </div>
   {/if}
 
-  <FolderPicker
-    storageId={item.storage_id ?? ""}
-    projectId={item.project_id ?? ""}
-    onFolderAdded={onConfigsChanged}
-  />
-
-  <!-- Custom schedule override -->
-  <div class="flex items-center gap-2">
-    <span class="text-xs text-gray-500 shrink-0">Override:</span>
-    <input
-      type="time"
-      class="bg-gray-800 border border-gray-700 rounded px-2 py-0.5 text-xs text-gray-300
-              focus:outline-none focus:border-blue-500"
-      placeholder={globalSchedule}
-      bind:value={scheduleInput}
-      onblur={saveCustomSchedule}
+  <div class="flex gap-4 justify-between">
+    <FolderPicker
+      storageId={item.storage_id ?? ""}
+      projectId={item.project_id ?? ""}
+      onFolderAdded={onConfigsChanged}
     />
-    <span class="text-xs text-gray-600">(blank = global)</span>
+
+    {#if folderConfigs.length > 0}
+      <!-- Custom schedule override -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-500 shrink-0">Override run time:</span>
+        <input
+          type="time"
+          class="input input-sm w-24"
+          placeholder={globalSchedule}
+          bind:value={scheduleInput}
+          onblur={saveCustomSchedule}
+        />
+      </div>
+    {/if}
   </div>
 
   {#if error}
