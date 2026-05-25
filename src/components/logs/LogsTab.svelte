@@ -30,13 +30,13 @@
 </script>
 
 <div class="flex flex-col h-full">
-  <div class="flex items-center justify-between px-3 py-2 border-b border-gray-700 shrink-0">
+  <div class="flex items-center justify-between px-3 py-2 shrink-0">
     <LogFilter
       filter={logsStore.levelFilter}
       onFilterChange={(f) => logsStore.setFilter(f)}
     />
     <button
-      class="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 disabled:opacity-50"
+      class="btn"
       onclick={clearLogs}
       disabled={clearing}
     >
@@ -44,7 +44,9 @@
     </button>
   </div>
   {#if loading}
-    <div class="flex-1 flex items-center justify-center text-gray-500">Loading…</div>
+    <div class="flex-1 flex items-center justify-center text-gray-500 font-medium text-xl">
+      <span class="loading loading-infinity loading-xl me-1"></span> Loading…
+    </div>
   {:else}
     <div class="flex-1 overflow-hidden">
       <LogList entries={logsStore.filteredEntries} />

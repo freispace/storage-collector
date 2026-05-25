@@ -20,7 +20,7 @@
 
 <div
   bind:this={listEl}
-  class="overflow-y-auto h-full font-mono text-xs"
+  class="overflow-y-auto h-full font-mono text-xs bg-base-100 rounded-t-box shadow-md mx-3"
   onscroll={(e) => {
     const el = e.currentTarget as HTMLElement;
     autoScroll = el.scrollTop < 10;

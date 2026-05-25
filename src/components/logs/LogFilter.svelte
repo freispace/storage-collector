@@ -14,13 +14,13 @@
   ];
 </script>
 
-<div class="flex gap-1">
+<div role="tablist" class="tabs tabs-box">
   {#each levels as level}
     <button
-      class="px-2 py-1 text-xs rounded transition-colors
+      class="tab
         {filter === level.value
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
+          ? 'tab-active'
+          : ''}"
       onclick={() => onFilterChange(level.value)}
     >
       {level.label}

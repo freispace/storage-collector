@@ -36,8 +36,7 @@
 
 <div>
   <button
-    class="flex items-center gap-1 px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded
-           hover:bg-gray-600 disabled:opacity-50"
+    class="btn btn-neutral btn-sm"
     onclick={pickFolder}
     disabled={picking || !storageId || !projectId}
   >

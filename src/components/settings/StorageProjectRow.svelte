@@ -66,13 +66,13 @@
   <div class="flex items-start justify-between gap-2">
     <div class="flex flex-wrap gap-1 text-xs min-w-0">
       <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-[180px]"
+        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-45"
         title={item.storage_id ?? ""}
       >
         S: {item.storage_id ? item.storage_id.slice(0, 8) + "…" : "N/A"}
       </span>
       <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-[180px]"
+        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-45"
         title={item.project_id ?? ""}
       >
         P: {item.project_id ? item.project_id.slice(0, 8) + "…" : "N/A"}
@@ -80,8 +80,7 @@
     </div>
     {#if folderConfigs.length > 0}
       <button
-        class="shrink-0 px-2 py-1 text-xs bg-green-700 text-white rounded hover:bg-green-600
-               disabled:opacity-50"
+        class="shrink-0 btn btn-success btn-xs"
         onclick={runNow}
         disabled={running || !item.storage_id || !item.project_id}
       >

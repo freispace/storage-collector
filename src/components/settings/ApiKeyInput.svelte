@@ -37,17 +37,31 @@
 <div class="space-y-2">
   <label for="api-key-input" class="block text-xs font-medium text-gray-400 uppercase tracking-wide">API Key</label>
   <div class="flex gap-2">
-    <input
-      id="api-key-input"
-      type="password"
-      class="flex-1 bg-gray-800 border border-gray-600 rounded px-3 py-1.5 text-sm text-gray-100
-             focus:outline-none focus:border-blue-500"
-      placeholder="freispace API key"
-      bind:value={inputValue}
-      onkeydown={(e) => { if (e.key === "Enter") save(); }}
-    />
+    <div class="input flex-1">
+      <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          stroke-width="2.5"
+          fill="none"
+          stroke="currentColor"
+        >
+          <path
+            d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+          ></path>
+          <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+        </g>
+      </svg>
+      <input
+        id="api-key-input"
+        type="password"
+        placeholder="freispace API key"
+        bind:value={inputValue}
+        onkeydown={(e) => { if (e.key === "Enter") save(); }}
+      />
+    </div>
     <button
-      class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-50"
+      class="btn btn-primary"
       onclick={save}
       disabled={saving}
     >

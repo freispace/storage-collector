@@ -46,8 +46,7 @@
 
     <div class="flex items-center gap-3">
       <button
-        class="px-3 py-1.5 text-sm bg-green-700 text-white rounded hover:bg-green-600
-               disabled:opacity-50"
+        class="btn btn-success btn-sm"
         onclick={triggerAll}
         disabled={running}
       >
