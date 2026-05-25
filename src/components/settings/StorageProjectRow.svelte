@@ -7,10 +7,11 @@
     item: StorageProjectItem;
     folderConfigs: FolderConfig[];
     globalSchedule: string;
+    names: Map<string, string>;
     onConfigsChanged: () => void;
   }
 
-  let { item, folderConfigs, globalSchedule, onConfigsChanged }: Props = $props();
+  let { item, folderConfigs, globalSchedule, names, onConfigsChanged }: Props = $props();
 
   let running = $state(false);
   let error = $state<string | null>(null);
@@ -19,6 +20,14 @@
   $effect(() => {
     scheduleInput = folderConfigs[0]?.custom_schedule ?? "";
   });
+
+  const storageName = $derived(item.storage_id ? names.get(item.storage_id) ?? null : null);
+  const projectName = $derived(item.project_id ? names.get(item.project_id) ?? null : null);
+
+  function labelFor(prefix: string, id: string | null, name: string | null): string {
+    if (!id) return `${prefix}: N/A`;
+    return name ? name : `${prefix}: ${id.slice(0, 8)}…`;
+  }
 
   async function removeFolder(id: string) {
     try {
@@ -62,20 +71,20 @@
 </script>
 
 <div class="border border-gray-700 rounded p-3 space-y-2">
-  <!-- Header row: IDs + Run button -->
+  <!-- Header row: names/IDs + Run button -->
   <div class="flex items-start justify-between gap-2">
-    <div class="flex flex-wrap gap-1 text-xs min-w-0">
+    <div class="flex flex-col gap-1 text-xs min-w-0">
       <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-45"
+        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 truncate max-w-60"
         title={item.storage_id ?? ""}
       >
-        S: {item.storage_id ? item.storage_id.slice(0, 8) + "…" : "N/A"}
+        S: {labelFor("S", item.storage_id, storageName)}
       </span>
       <span
-        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 font-mono truncate max-w-45"
+        class="bg-gray-700 px-1.5 py-0.5 rounded text-gray-300 truncate max-w-60"
         title={item.project_id ?? ""}
       >
-        P: {item.project_id ? item.project_id.slice(0, 8) + "…" : "N/A"}
+        P: {labelFor("P", item.project_id, projectName)}
       </span>
     </div>
     {#if folderConfigs.length > 0}

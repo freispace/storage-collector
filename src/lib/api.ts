@@ -73,6 +73,12 @@ export interface SchedulerTickPayload {
   status: string;
 }
 
+export interface CachedEntityName {
+  entity_type: string;
+  entity_id: string;
+  name: string | null;
+}
+
 // ── Commands ─────────────────────────────────────────────────────────────────
 
 export const api = {
@@ -132,6 +138,12 @@ export const api = {
 
   clearLogEntries: () =>
     invoke<null>("clear_log_entries"),
+
+  syncEntityNames: () =>
+    invoke<null>("sync_entity_names"),
+
+  getEntityNames: () =>
+    invoke<CachedEntityName[]>("get_entity_names"),
 };
 
 // ── Events ───────────────────────────────────────────────────────────────────

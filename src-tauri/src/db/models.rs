@@ -63,6 +63,14 @@ impl std::fmt::Display for LogLevel {
     }
 }
 
+/// A cached storage or project name fetched from the freispace API.
+#[derive(Debug, Clone, Serialize, Deserialize, Type, sqlx::FromRow)]
+pub struct CachedEntityName {
+    pub entity_type: String,
+    pub entity_id: String,
+    pub name: Option<String>,
+}
+
 /// A single log entry.
 #[derive(Debug, Clone, Serialize, Deserialize, Type, sqlx::FromRow)]
 pub struct LogEntry {

@@ -12,7 +12,14 @@ pub async fn get_api_key(state: State<'_, Arc<AppState>>) -> Result<String, AppE
 #[tauri::command]
 #[specta::specta]
 pub async fn set_api_key(state: State<'_, Arc<AppState>>, key: String) -> Result<(), AppError> {
-    queries::set_setting(&state.pool, "api_key", &key).await
+    queries::set_setting(&state.pool, "api_key", &key).await?;
+    if !key.is_empty() {
+        let state_clone = state.inner().clone();
+        tauri::async_runtime::spawn(async move {
+            let _ = super::projects::sync_names_inner(&state_clone).await;
+        });
+    }
+    Ok(())
 }
 
 #[tauri::command]

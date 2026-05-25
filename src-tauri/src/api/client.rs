@@ -88,6 +88,35 @@ impl FreispaceClient {
         self.get_paginated(&url, api_key).await
     }
 
+    /// Fetch a page of projects, optionally filtered by `updated_since` (YYYY-MM-DD).
+    /// Requests `status=all` so archived projects are included in the name cache.
+    pub async fn fetch_projects_page_since(
+        &self,
+        api_key: &str,
+        page: u32,
+        since: Option<&str>,
+    ) -> Result<PaginatedResponse<FreispaceProject>, AppError> {
+        let mut url = format!("{BASE_URL}/projects?page={page}&limit=25&status=all");
+        if let Some(s) = since {
+            url.push_str(&format!("&updated_since={s}"));
+        }
+        self.get_paginated(&url, api_key).await
+    }
+
+    /// Fetch a page of storages, optionally filtered by `updated_since` (YYYY-MM-DD).
+    pub async fn fetch_storages_page_since(
+        &self,
+        api_key: &str,
+        page: u32,
+        since: Option<&str>,
+    ) -> Result<PaginatedResponse<FreispaceStorage>, AppError> {
+        let mut url = format!("{BASE_URL}/storages?page={page}&limit=25");
+        if let Some(s) = since {
+            url.push_str(&format!("&updated_since={s}"));
+        }
+        self.get_paginated(&url, api_key).await
+    }
+
     async fn get_paginated<T>(&self, url: &str, api_key: &str) -> Result<PaginatedResponse<T>, AppError>
     where
         T: serde::de::DeserializeOwned + specta::Type + Clone + std::fmt::Debug,

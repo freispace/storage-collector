@@ -16,6 +16,8 @@ export const commands = {
 	fetchProjectsPage: (page: number) => typedError<PaginatedResponse<FreispaceProject>, string>(__TAURI_INVOKE("fetch_projects_page", { page })),
 	fetchStoragesPage: (page: number) => typedError<PaginatedResponse<FreispaceStorage>, string>(__TAURI_INVOKE("fetch_storages_page", { page })),
 	fetchStorageProjectsPage: (page: number) => typedError<PaginatedResponse<StorageProjectItem>, string>(__TAURI_INVOKE("fetch_storage_projects_page", { page })),
+	syncEntityNames: () => typedError<null, string>(__TAURI_INVOKE("sync_entity_names")),
+	getEntityNames: () => typedError<CachedEntityName[], string>(__TAURI_INVOKE("get_entity_names")),
 	listFolderConfigs: () => typedError<FolderConfig[], string>(__TAURI_INVOKE("list_folder_configs")),
 	upsertFolderConfig: (input: FolderConfigInput) => typedError<FolderConfig, string>(__TAURI_INVOKE("upsert_folder_config", { input })),
 	deleteFolderConfig: (id: string) => typedError<null, string>(__TAURI_INVOKE("delete_folder_config", { id })),
@@ -33,6 +35,13 @@ export const events = {
 };
 
 /* Types */
+/**  A cached storage or project name fetched from the freispace API. */
+export type CachedEntityName = {
+	entity_type: string,
+	entity_id: string,
+	name: string | null,
+};
+
 /**  A configured folder path for a storage-project pair. */
 export type FolderConfig = {
 	id: string,

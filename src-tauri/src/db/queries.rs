@@ -2,7 +2,7 @@ use sqlx::{SqlitePool, Row};
 use chrono::Utc;
 use uuid::Uuid;
 
-use super::models::{FolderConfig, FolderConfigInput, LogEntry, LogLevel, PendingSubmission};
+use super::models::{CachedEntityName, FolderConfig, FolderConfigInput, LogEntry, LogLevel, PendingSubmission};
 use crate::error::AppError;
 
 // ── Settings ─────────────────────────────────────────────────────────────────
@@ -270,4 +270,35 @@ pub async fn prune_log_entries(pool: &SqlitePool) -> Result<(), AppError> {
     .execute(pool)
     .await?;
     Ok(())
+}
+
+// ── Entity name cache ─────────────────────────────────────────────────────────
+
+pub async fn upsert_entity_name(
+    pool: &SqlitePool,
+    entity_type: &str,
+    entity_id: &str,
+    name: Option<&str>,
+) -> Result<(), AppError> {
+    let now = Utc::now().to_rfc3339();
+    sqlx::query(
+        "INSERT INTO entity_names (entity_type, entity_id, name, fetched_at) VALUES (?, ?, ?, ?) \
+         ON CONFLICT(entity_type, entity_id) DO UPDATE SET name = excluded.name, fetched_at = excluded.fetched_at",
+    )
+    .bind(entity_type)
+    .bind(entity_id)
+    .bind(name)
+    .bind(&now)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
+pub async fn get_entity_names(pool: &SqlitePool) -> Result<Vec<CachedEntityName>, AppError> {
+    let rows = sqlx::query_as::<_, CachedEntityName>(
+        "SELECT entity_type, entity_id, name FROM entity_names",
+    )
+    .fetch_all(pool)
+    .await?;
+    Ok(rows)
 }

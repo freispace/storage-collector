@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { api, type FolderConfig, type StorageProjectItem } from "$lib/api";
+  import { namesStore } from "$lib/stores/names.svelte";
   import StorageProjectRow from "./StorageProjectRow.svelte";
 
   interface Props {
@@ -37,6 +38,12 @@
     } finally {
       loading = false;
       loadingMore = false;
+    }
+
+    if (page === 1) {
+      // Load cached names immediately, then sync in background for any new ones
+      namesStore.load();
+      api.syncEntityNames().catch(() => {}).then(() => namesStore.load());
     }
   }
 
@@ -76,6 +83,7 @@
           {item}
           folderConfigs={getConfigsForItem(item)}
           {globalSchedule}
+          names={namesStore.names}
           onConfigsChanged={refreshConfigs}
         />
       {/each}

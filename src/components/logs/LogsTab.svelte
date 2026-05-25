@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { api } from "$lib/api";
   import { logsStore } from "$lib/stores/logs.svelte";
+  import { namesStore } from "$lib/stores/names.svelte";
   import LogFilter from "./LogFilter.svelte";
   import LogList from "./LogList.svelte";
 
@@ -16,6 +17,7 @@
     } finally {
       loading = false;
     }
+    namesStore.load();
   });
 
   async function clearLogs() {
