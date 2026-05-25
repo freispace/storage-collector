@@ -43,7 +43,10 @@
     if (page === 1) {
       // Load cached names immediately, then sync in background for any new ones
       namesStore.load();
-      api.syncEntityNames().catch(() => {}).then(() => namesStore.load());
+      api
+        .syncEntityNames()
+        .catch(() => {})
+        .then(() => namesStore.load());
     }
   }
 
@@ -53,19 +56,25 @@
 
   function getConfigsForItem(item: StorageProjectItem): FolderConfig[] {
     return folderConfigs.filter(
-      (fc) => fc.storage_id === item.storage_id && fc.project_id === item.project_id
+      (fc) =>
+        fc.storage_id === item.storage_id && fc.project_id === item.project_id,
     );
   }
 
-  onMount(() => { loadPage(1); });
+  onMount(() => {
+    loadPage(1);
+  });
 </script>
 
-<div class="space-y-2">
+<div class="h-full overflow-y-auto space-y-2">
   <div class="flex items-center justify-between">
     <span class="text-xs font-medium text-gray-400 uppercase tracking-wide">
       Storage Projects
     </span>
-    <button class="text-xs text-gray-500 hover:text-gray-300" onclick={() => loadPage(1)}>
+    <button
+      class="text-xs text-gray-500 hover:text-gray-300"
+      onclick={() => loadPage(1)}
+    >
       Refresh
     </button>
   </div>
@@ -75,7 +84,9 @@
   {:else if error}
     <div class="text-sm text-red-400 bg-red-900/20 rounded p-2">{error}</div>
   {:else if items.length === 0}
-    <div class="text-center text-gray-500 py-4 text-sm">No storage projects found</div>
+    <div class="text-center text-gray-500 py-4 text-sm">
+      No storage projects found
+    </div>
   {:else}
     <div class="space-y-2">
       {#each items as item (item.id)}

@@ -35,9 +35,13 @@
 </script>
 
 <div class="space-y-2">
-  <label for="api-key-input" class="block text-xs font-medium text-gray-400 uppercase tracking-wide">API Key</label>
+  <label for="api-key-input" class="block text-xs font-medium text-gray-400 uppercase tracking-wide">freispace API Key</label>
+  <div class="text-gray-400">
+    The API key requires the following permissions:
+    <span class="badge badge-sm font-mono">Projects : View</span> <span class="badge badge-sm font-mono">Storages : Update</span>
+  </div>
   <div class="flex gap-2">
-    <div class="input flex-1">
+    <div class="input flex-1 max-w-135">
       <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <g
           stroke-linejoin="round"

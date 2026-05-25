@@ -11,20 +11,31 @@
     onConfigsChanged: () => void;
   }
 
-  let { item, folderConfigs, globalSchedule, names, onConfigsChanged }: Props = $props();
+  let { item, folderConfigs, globalSchedule, names, onConfigsChanged }: Props =
+    $props();
 
   let running = $state(false);
   let error = $state<string | null>(null);
-  let scheduleInput = $state(untrack(() => folderConfigs[0]?.custom_schedule ?? ""));
+  let scheduleInput = $state(
+    untrack(() => folderConfigs[0]?.custom_schedule ?? ""),
+  );
 
   $effect(() => {
     scheduleInput = folderConfigs[0]?.custom_schedule ?? "";
   });
 
-  const storageName = $derived(item.storage_id ? names.get(item.storage_id) ?? null : null);
-  const projectName = $derived(item.project_id ? names.get(item.project_id) ?? null : null);
+  const storageName = $derived(
+    item.storage_id ? (names.get(item.storage_id) ?? null) : null,
+  );
+  const projectName = $derived(
+    item.project_id ? (names.get(item.project_id) ?? null) : null,
+  );
 
-  function labelFor(prefix: string, id: string | null, name: string | null): string {
+  function labelFor(
+    prefix: string,
+    id: string | null,
+    name: string | null,
+  ): string {
     if (!id) return `${prefix}: N/A`;
     return name ? name : `${prefix}: ${id.slice(0, 8)}…`;
   }
@@ -102,8 +113,13 @@
   {#if folderConfigs.length > 0}
     <div class="space-y-1">
       {#each folderConfigs as fc (fc.id)}
-        <div class="flex items-center gap-2 text-xs bg-gray-800 rounded px-2 py-1">
-          <span class="flex-1 font-mono text-gray-300 truncate" title={fc.folder_path}>
+        <div
+          class="flex items-center gap-2 text-xs bg-gray-800 rounded px-2 py-1"
+        >
+          <span
+            class="flex-1 font-mono text-gray-300 truncate"
+            title={fc.folder_path}
+          >
             {fc.folder_path}
           </span>
           <button
