@@ -40,7 +40,7 @@
   <label for="api-key-input" class="fieldset-legend">freispace API Key</label>
   <div class="text-gray-400 mb-2">
     The API key requires the following permissions:
-    <span class="badge badge-sm font-mono">Projects : View</span>
+    <span class="badge badge-sm font-mono">Projects : Update</span>
     <span class="badge badge-sm font-mono">Storages : Update</span>
   </div>
   <div class="flex gap-2">
