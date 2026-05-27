@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { getVersion } from "@tauri-apps/api/app";
   import { api } from "$lib/api";
   import { settingsStore } from "$lib/stores/settings.svelte";
   import ApiKeyInput from "./ApiKeyInput.svelte";
@@ -10,10 +11,20 @@
   let activeTab = $state<"settings" | "projects" | "info">("settings");
   let running = $state(false);
   let runError = $state<string | null>(null);
+  let appVersion = $state("...");
 
   onMount(() => {
     settingsStore.load();
+    void loadAppVersion();
   });
+
+  async function loadAppVersion() {
+    try {
+      appVersion = await getVersion();
+    } catch {
+      appVersion = "Unknown";
+    }
+  }
 
   async function triggerAll() {
     running = true;
@@ -121,9 +132,9 @@
     >
       Info
     </button>
-    <div class="tab-content bg-base-100 border-base-300 p-6">
+    <div class="tab-content bg-base-100 border-base-300 p-6 flex flex-col">
       <svg
-        class="max-w-48 mt-4 mb-6"
+        class="max-w-48 mt-2 mb-6 shrink-0"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 2339 422"
@@ -147,11 +158,66 @@
           /></defs
         ></svg
       >
-      <p>Version 0.1</p>
-      <p>© Leonardo Re, freispace GmbH</p>
-      <button class="btn mt-4" onclick={() => api.showLogsWindow()}
-        >Show logs</button
-      >
+      <div>
+        <p>Version {appVersion}</p>
+        <p class="text-gray-400">© Leonardo Re, freispace GmbH</p>
+        <button class="btn mt-4" onclick={() => api.showLogsWindow()}
+          >Show logs</button
+        >
+      </div>
+      <textarea class="textarea w-full mt-8 h-full" readonly>
+This project uses the following open source software:
+
+Tauri
+MIT License
+Copyright (c) 2017 - Present Tauri Apps Contributors
+
+SvelteKit
+MIT License
+Copyright (c) 2020 https://github.com/sveltejs/kit/graphs/contributors
+
+Svelte
+MIT License
+Copyright (c) 2016-2025 Svelte Contributors
+
+Vite
+MIT License
+Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
+
+Tailwind CSS
+MIT License
+Copyright (c) Tailwind Labs, Inc.
+
+DaisyUI
+MIT License
+Copyright (c) 2020 Pouya Saadeghi
+
+Material Design Icons
+Apache 2.0 - see http://www.apache.org/licenses/LICENSE-2.0
+Pictogrammers
+
+-----------------------------------------
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+      </textarea>
     </div>
   </div>
 </div>
