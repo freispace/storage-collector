@@ -71,3 +71,25 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Set up Tauri private key
+        if: env.TAURI_PRIVATE_KEY != null
+        run: |
+          echo "$TAURI_PRIVATE_KEY" > private.key
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+
+      - name: Sign updater JSON
+        if: env.TAURI_PRIVATE_KEY != null
+        run: |
+          for f in src-tauri/target/release/bundle/*/latest.json; do
+            npx tauri signer sign --private-key private.key "$f"
+          done
+
+      - name: Upload updater JSON
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            src-tauri/target/release/bundle/**/latest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
