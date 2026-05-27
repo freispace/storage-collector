@@ -22,6 +22,8 @@ jobs:
     runs-on: ${{ matrix.platform }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
@@ -75,20 +77,16 @@ jobs:
           args: ${{ matrix.args }}
 
       - name: Set up Tauri private key
-        if: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+        if: env.TAURI_SIGNING_PRIVATE_KEY != ''
         run: |
           echo "$TAURI_SIGNING_PRIVATE_KEY" > private.key
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
 
       - name: Sign updater JSON
-        if: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+        if: env.TAURI_SIGNING_PRIVATE_KEY != ''
         run: |
           for f in src-tauri/target/release/bundle/*/latest.json; do
             npx tauri signer sign --private-key private.key --password "$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" "$f"
           done
-        env:
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
       - name: Upload updater JSON
         uses: softprops/action-gh-release@v2
