@@ -65,6 +65,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SQLX_OFFLINE: "true"
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "freispace Storage Collector ${{ github.ref_name }}"
@@ -73,18 +75,20 @@ jobs:
           args: ${{ matrix.args }}
 
       - name: Set up Tauri private key
-        if: env.TAURI_PRIVATE_KEY != null
+        if: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
         run: |
-          echo "$TAURI_PRIVATE_KEY" > private.key
+          echo "$TAURI_SIGNING_PRIVATE_KEY" > private.key
         env:
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
 
       - name: Sign updater JSON
-        if: env.TAURI_PRIVATE_KEY != null
+        if: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
         run: |
           for f in src-tauri/target/release/bundle/*/latest.json; do
-            npx tauri signer sign --private-key private.key "$f"
+            npx tauri signer sign --private-key private.key --password "$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" "$f"
           done
+        env:
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
       - name: Upload updater JSON
         uses: softprops/action-gh-release@v2
