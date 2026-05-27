@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG]"
+title: "[BUG] "
 labels: ''
 assignees: ''
 
@@ -31,4 +31,4 @@ If applicable, add screenshots to help explain your problem.
 Add any other context about the problem here.
 
 **CONFIRM**
-[ ] This is not a AI-generated bug report
+- [ ] This is not a AI-generated bug report
