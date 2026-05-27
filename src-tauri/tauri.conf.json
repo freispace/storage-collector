@@ -54,7 +54,7 @@
     ],
     "resources": [],
     "externalBin": [],
-    "copyright": "",
+    "copyright": "© Leonardo Re, freispace GmbH",
     "category": "Utility",
     "shortDescription": "Monitor folder sizes and submit to freispace",
     "longDescription": "A background tray application that monitors local folder sizes and submits storage statistics to the freispace API.",
