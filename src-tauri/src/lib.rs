@@ -12,6 +12,7 @@ use tokio::sync::Mutex;
 use tokio_cron_scheduler::JobScheduler;
 
 use api::client::FreispaceClient;
+#[cfg(debug_assertions)]
 use events::{LogEntryEvent, SchedulerTickEvent};
 use tray::{TrayManager, TrayState};
 
