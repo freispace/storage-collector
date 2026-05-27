@@ -57,6 +57,9 @@ CREATE TABLE IF NOT EXISTS entity_names (
     entity_type TEXT NOT NULL CHECK (entity_type IN ('storage', 'project')),
     entity_id   TEXT NOT NULL,
     name        TEXT,
+    parent_id   TEXT,
+    project_number TEXT,
+    color       TEXT,
     fetched_at  TEXT NOT NULL,
     PRIMARY KEY (entity_type, entity_id)
 );

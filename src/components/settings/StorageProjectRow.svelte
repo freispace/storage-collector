@@ -8,6 +8,14 @@
     folderConfigs: FolderConfig[];
     globalSchedule: string;
     names: Map<string, string>;
+    projectMeta: Map<
+      string,
+      {
+        parent_id: string | null;
+        project_number: string | null;
+        color: string | null;
+      }
+    >;
     onConfigsChanged: () => void;
     enabled: boolean;
     onEnabledChanged: () => void;
@@ -19,6 +27,7 @@
     folderConfigs,
     globalSchedule,
     names,
+    projectMeta,
     onConfigsChanged,
     enabled,
     onEnabledChanged,
@@ -36,20 +45,38 @@
     scheduleInput = folderConfigs[0]?.custom_schedule ?? "";
   });
 
-  const storageName = $derived(
-    item.storage_id ? (names.get(item.storage_id) ?? null) : null,
-  );
   const projectName = $derived(
     item.project_id ? (names.get(item.project_id) ?? null) : null,
   );
+  const projectDetails = $derived(
+    item.project_id ? (projectMeta.get(item.project_id) ?? null) : null,
+  );
+  const parentProjectName = $derived(
+    projectDetails?.parent_id
+      ? (names.get(projectDetails.parent_id) ?? null)
+      : null,
+  );
+  const projectColor = $derived.by(() => {
+    const value = projectDetails?.color?.trim() ?? "";
+    return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value) ? value : null;
+  });
+  const projectNumber = $derived.by(() => {
+    const value = projectDetails?.project_number?.trim() ?? "";
+    return value ? value : null;
+  });
+  const storageName = $derived(
+    item.storage_id ? (names.get(item.storage_id) ?? null) : null,
+  );
 
-  function labelFor(
-    prefix: string,
-    id: string | null,
-    name: string | null,
-  ): string {
-    if (!id) return `${prefix}: N/A`;
-    return name ? name : `${prefix}: ${id.slice(0, 8)}…`;
+  function labelFor(id: string | null, name: string | null): string {
+    if (!id) return "N/A";
+    return name ? name : `${id.slice(0, 8)}…`;
+  }
+
+  function projectLabel(): string {
+    if (!item.project_id) return "N/A";
+    const baseName = projectName ?? item.project_id.slice(0, 8);
+    return parentProjectName ? `${parentProjectName} / ${baseName}` : baseName;
   }
 
   async function removeFolder(id: string) {
@@ -117,15 +144,46 @@
     <h1 class="font-medium flex items-center gap-2">
       <input
         type="checkbox"
-        class="toggle toggle-xs"
+        class="toggle toggle-xs me-2"
         checked={enabled}
         onchange={toggleEnabled}
       />
-      {labelFor("P", item.project_id, projectName)} &ndash; {labelFor(
-        "S",
-        item.storage_id,
-        storageName,
-      )}
+      <span
+        class="inline-block w-1.5 h-5 bg-base-300"
+        style:background-color={projectColor ?? undefined}
+        aria-hidden="true"
+      ></span>
+      {#if projectNumber}
+        <div
+          class="inline-flex items-center rounded bg-gray-700 px-1.5 py-0.5 text-xs font-medium text-nowrap text-gray-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-1 size-3 shrink-0"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M9.243 3.03a1 1 0 01.727 1.213L9.53 6h2.94l.56-2.243a1 1 0 111.94.486L14.53 6H17a1 1 0 110 2h-2.97l-1 4H15a1 1 0 110 2h-2.47l-.56 2.242a1 1 0 11-1.94-.485L10.47 14H7.53l-.56 2.242a1 1 0 11-1.94-.485L5.47 14H3a1 1 0 110-2h2.97l1-4H5a1 1 0 110-2h2.47l.56-2.243a1 1 0 011.213-.727zM9.03 8l-1 4h2.938l1-4H9.031z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          {projectNumber}
+        </div>
+      {/if}
+      {projectLabel()}
+      <span class="mx-1">&mdash;</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        class="size-4 -mb-1 -me-0.5 inline"
+        ><path
+          fill="currentColor"
+          d="M8 6a1 1 0 1 0-1-1a1 1 0 0 0 1 1m13 13h-6.18A3 3 0 0 0 13 17.18V15h4a3 3 0 0 0 3-3v-2a3 3 0 0 0-.78-2A3 3 0 0 0 20 6V4a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v2a3 3 0 0 0 .78 2A3 3 0 0 0 4 10v2a3 3 0 0 0 3 3h4v2.18A3 3 0 0 0 9.18 19H3a1 1 0 0 0 0 2h6.18a3 3 0 0 0 5.64 0H21a1 1 0 0 0 0-2M6 4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1Zm1 9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Zm5 8a1 1 0 1 1 1-1a1 1 0 0 1-1 1M8 10a1 1 0 1 0 1 1a1 1 0 0 0-1-1"
+        ></path></svg
+      >
+      {labelFor(item.storage_id, storageName)}
     </h1>
     <div class="flex items-center gap-2 shrink-0">
       {#if confirming}

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import {
     api,
     type FolderConfig,
@@ -12,9 +11,10 @@
 
   interface Props {
     globalSchedule: string;
+    apiKey: string;
   }
 
-  let { globalSchedule }: Props = $props();
+  let { globalSchedule, apiKey }: Props = $props();
 
   let allItems = $state<StorageProjectItem[]>([]);
   let folderConfigs = $state<FolderConfig[]>([]);
@@ -84,6 +84,13 @@
   );
 
   function itemLabel(item: StorageProjectItem): string {
+    const projectMeta = item.project_id
+      ? (namesStore.projectMeta.get(item.project_id) ?? null)
+      : null;
+    const parentName = projectMeta?.parent_id
+      ? (namesStore.names.get(projectMeta.parent_id) ??
+        `${projectMeta.parent_id.slice(0, 8)}…`)
+      : null;
     const p = item.project_id
       ? (namesStore.names.get(item.project_id) ??
         `${item.project_id.slice(0, 8)}…`)
@@ -92,10 +99,11 @@
       ? (namesStore.names.get(item.storage_id) ??
         `${item.storage_id.slice(0, 8)}…`)
       : "N/A";
-    return `${p} – ${s}`;
+    const projectLabel = parentName ? `${parentName} - ${p}` : `${p}`;
+    return `${projectLabel} — ${s}`;
   }
 
-  async function loadAll() {
+  async function loadAll(fullNameRefresh = false) {
     loading = true;
     error = null;
 
@@ -128,11 +136,11 @@
       loading = false;
     }
 
-    namesStore.load();
-    api
-      .syncEntityNames()
-      .catch(() => {})
-      .then(() => namesStore.load());
+    await namesStore.load();
+    await (
+      fullNameRefresh ? api.syncEntityNamesFull() : api.syncEntityNames()
+    ).catch(() => {});
+    await namesStore.load();
   }
 
   async function addProject() {
@@ -192,8 +200,14 @@
     return setting?.enabled ?? true;
   }
 
-  onMount(() => {
-    loadAll();
+  let lastLoadedApiKey = $state<string | null>(null);
+
+  $effect(() => {
+    if (apiKey === lastLoadedApiKey) {
+      return;
+    }
+    lastLoadedApiKey = apiKey;
+    loadAll(Boolean(apiKey));
   });
 </script>
 
@@ -211,7 +225,7 @@
       <div class="flex items-center gap-2">
         <button
           class="btn btn-ghost"
-          onclick={() => loadAll()}
+          onclick={() => loadAll(true)}
           aria-label="Refresh list"
         >
           <svg
@@ -273,6 +287,7 @@
             folderConfigs={getConfigsForItem(item)}
             {globalSchedule}
             names={namesStore.names}
+            projectMeta={namesStore.projectMeta}
             onConfigsChanged={refreshConfigs}
             enabled={isItemEnabled(item)}
             onEnabledChanged={refreshSettings}

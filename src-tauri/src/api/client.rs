@@ -88,6 +88,39 @@ impl FreispaceClient {
         self.get_paginated(&url, api_key).await
     }
 
+    /// Fetch a single project by id.
+    pub async fn fetch_project(
+        &self,
+        api_key: &str,
+        project_id: &str,
+    ) -> Result<FreispaceProject, AppError> {
+        let url = format!("{BASE_URL}/projects/{project_id}");
+        let resp = self
+            .http
+            .get(&url)
+            .header("Authorization", format!("Bearer {api_key}"))
+            .header("Accept", "application/json")
+            .send()
+            .await?;
+
+        let status = resp.status();
+        if status == StatusCode::TOO_MANY_REQUESTS {
+            return Err(AppError::Api {
+                status: status.as_u16(),
+                message: "Rate limit exceeded".to_string(),
+            });
+        }
+        if !status.is_success() {
+            let body: ApiErrorBody = resp.json().await.unwrap_or(ApiErrorBody { message: None });
+            return Err(AppError::Api {
+                status: status.as_u16(),
+                message: body.message.unwrap_or_else(|| status.to_string()),
+            });
+        }
+
+        Ok(resp.json::<FreispaceProject>().await?)
+    }
+
     /// Fetch a page of projects, optionally filtered by `updated_since` (YYYY-MM-DD).
     /// Requests `status=all` so archived projects are included in the name cache.
     pub async fn fetch_projects_page_since(

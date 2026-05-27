@@ -326,15 +326,26 @@ pub async fn upsert_entity_name(
     entity_type: &str,
     entity_id: &str,
     name: Option<&str>,
+    parent_id: Option<&str>,
+    project_number: Option<&str>,
+    color: Option<&str>,
 ) -> Result<(), AppError> {
     let now = Utc::now().to_rfc3339();
     sqlx::query(
-        "INSERT INTO entity_names (entity_type, entity_id, name, fetched_at) VALUES (?, ?, ?, ?) \
-         ON CONFLICT(entity_type, entity_id) DO UPDATE SET name = excluded.name, fetched_at = excluded.fetched_at",
+        "INSERT INTO entity_names (entity_type, entity_id, name, parent_id, project_number, color, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?) \
+         ON CONFLICT(entity_type, entity_id) DO UPDATE SET \
+         name = excluded.name, \
+         parent_id = excluded.parent_id, \
+         project_number = excluded.project_number, \
+         color = excluded.color, \
+         fetched_at = excluded.fetched_at",
     )
     .bind(entity_type)
     .bind(entity_id)
     .bind(name)
+    .bind(parent_id)
+    .bind(project_number)
+    .bind(color)
     .bind(&now)
     .execute(pool)
     .await?;
@@ -343,7 +354,7 @@ pub async fn upsert_entity_name(
 
 pub async fn get_entity_names(pool: &SqlitePool) -> Result<Vec<CachedEntityName>, AppError> {
     let rows = sqlx::query_as::<_, CachedEntityName>(
-        "SELECT entity_type, entity_id, name FROM entity_names",
+        "SELECT entity_type, entity_id, name, parent_id, project_number, color FROM entity_names",
     )
     .fetch_all(pool)
     .await?;

@@ -31,6 +31,9 @@ export interface FolderConfigInput {
 export interface FreispaceProject {
   id: string;
   name: string | null;
+  parent_id: string | null;
+  number: string | null;
+  color: string | null;
 }
 
 export interface FreispaceStorage {
@@ -77,6 +80,9 @@ export interface CachedEntityName {
   entity_type: string;
   entity_id: string;
   name: string | null;
+  parent_id: string | null;
+  project_number: string | null;
+  color: string | null;
 }
 
 export interface StorageProjectSetting {
@@ -153,6 +159,9 @@ export const api = {
 
   syncEntityNames: () =>
     invoke<null>("sync_entity_names"),
+
+  syncEntityNamesFull: () =>
+    invoke<null>("sync_entity_names_full"),
 
   getEntityNames: () =>
     invoke<CachedEntityName[]>("get_entity_names"),

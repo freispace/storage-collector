@@ -7,6 +7,9 @@ use specta::Type;
 pub struct FreispaceProject {
     pub id: String,
     pub name: Option<String>,
+    pub parent_id: Option<String>,
+    pub number: Option<String>,
+    pub color: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

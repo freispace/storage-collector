@@ -69,6 +69,9 @@ pub struct CachedEntityName {
     pub entity_type: String,
     pub entity_id: String,
     pub name: Option<String>,
+    pub parent_id: Option<String>,
+    pub project_number: Option<String>,
+    pub color: Option<String>,
 }
 
 /// Enabled/disabled state for a storage-project pair.

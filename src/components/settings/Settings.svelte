@@ -108,7 +108,10 @@
           <LoadingText />
         </div>
       {:else}
-        <StorageProjectList globalSchedule={settingsStore.globalSchedule} />
+        <StorageProjectList
+          globalSchedule={settingsStore.globalSchedule}
+          apiKey={settingsStore.apiKey}
+        />
       {/if}
     </div>
 

@@ -17,6 +17,7 @@ export const commands = {
 	fetchStoragesPage: (page: number) => typedError<PaginatedResponse<FreispaceStorage>, string>(__TAURI_INVOKE("fetch_storages_page", { page })),
 	fetchStorageProjectsPage: (page: number) => typedError<PaginatedResponse<StorageProjectItem>, string>(__TAURI_INVOKE("fetch_storage_projects_page", { page })),
 	syncEntityNames: () => typedError<null, string>(__TAURI_INVOKE("sync_entity_names")),
+	syncEntityNamesFull: () => typedError<null, string>(__TAURI_INVOKE("sync_entity_names_full")),
 	getEntityNames: () => typedError<CachedEntityName[], string>(__TAURI_INVOKE("get_entity_names")),
 	listFolderConfigs: () => typedError<FolderConfig[], string>(__TAURI_INVOKE("list_folder_configs")),
 	upsertFolderConfig: (input: FolderConfigInput) => typedError<FolderConfig, string>(__TAURI_INVOKE("upsert_folder_config", { input })),
@@ -45,6 +46,9 @@ export type CachedEntityName = {
 	entity_type: string,
 	entity_id: string,
 	name: string | null,
+	parent_id: string | null,
+	project_number: string | null,
+	color: string | null,
 };
 
 /**  A configured folder path for a storage-project pair. */
@@ -71,6 +75,9 @@ export type FolderConfigInput = {
 export type FreispaceProject = {
 	id: string,
 	name: string | null,
+	parent_id: string | null,
+	number: string | null,
+	color: string | null,
 };
 
 export type FreispaceStorage = {
