@@ -1,6 +1,9 @@
 # freispace Storage Collector
 
-A cross-platform desktop tray app that monitors local folder sizes and submits storage statistics to freispace on a daily schedule.
+A cross-platform desktop tray app that monitors local folder sizes and submits storage statistics to [freispace](https://freispace.com) on a daily schedule.
+
+![Screenshot of freispace Storage Collector](docs/freispace-storage-collector-projects.png)
+
 
 ## What it does
 
@@ -10,6 +13,15 @@ A cross-platform desktop tray app that monitors local folder sizes and submits s
 - Retries failed submissions automatically (up to 10 attempts, every 5 minutes)
 - Shows run status via five tray icon states: Idle, Active, OK, Warning, Error
 - Streams a live event log to the UI with info/warning/error filtering
+
+## How to use
+
+1. Create an API key in freispace. Required permissions: `Projects:Update` & `Storage:Update`
+2. Paste it in the the freispace Storage Collector
+
+![Screenshot of freispace Storage Collector](docs/freispace-storage-collector-settings.png)
+
+3. Update the list of Project Storages, select and, and select the folders to monitor
 
 ## Tech stack
 
