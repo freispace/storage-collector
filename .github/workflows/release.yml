@@ -78,10 +78,11 @@ jobs:
 
       - name: Sign updater JSON
         if: env.TAURI_SIGNING_PRIVATE_KEY != ''
+        shell: pwsh
         run: |
-          for f in src-tauri/target/release/bundle/*/latest.json; do
-            npx tauri signer sign --private-key "$TAURI_SIGNING_PRIVATE_KEY" --password "$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" "$f"
-          done
+          Get-ChildItem -Path "src-tauri/target/release/bundle" -Filter "latest.json" -Recurse | ForEach-Object {
+            npx tauri signer sign --private-key "$env:TAURI_SIGNING_PRIVATE_KEY" --password "$env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD" "$($_.FullName)"
+          }
 
       - name: Upload updater JSON
         uses: softprops/action-gh-release@v2
