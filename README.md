@@ -16,12 +16,16 @@ A cross-platform desktop tray app that monitors local folder sizes and submits s
 
 ## How to use
 
-1. Create an API key in freispace. Required permissions: `Projects:Update` & `Storage:Update`
+1. Create an API key in freispace. Required permissions: `Projects:Update` & `Storages:Update`
 2. Paste it in the the freispace Storage Collector
 
 ![Screenshot of freispace Storage Collector](docs/freispace-storage-collector-settings.png)
 
 3. Update the list of Project Storages, select and, and select the folders to monitor
+
+### Notice: Missing certificates
+
+We are working on obtaining certificated and signing the Mac OS and Windows versions of the app. **At the moment, both Windows and Mac OS might throw warnings when trying to launch the apps.** On Mac OS, you might need to manually allow execution in the settings.
 
 ## Tech stack
 
