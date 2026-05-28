@@ -74,20 +74,5 @@ jobs:
           releaseName: "freispace Storage Collector ${{ github.ref_name }}"
           releaseDraft: true
           prerelease: false
+          includeUpdaterJson: true
           args: ${{ matrix.args }}
-
-      - name: Sign updater JSON
-        if: env.TAURI_SIGNING_PRIVATE_KEY != ''
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path "src-tauri/target/release/bundle" -Filter "latest.json" -Recurse | ForEach-Object {
-            npx tauri signer sign --private-key "$env:TAURI_SIGNING_PRIVATE_KEY" --password "$env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD" "$($_.FullName)"
-          }
-
-      - name: Upload updater JSON
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            src-tauri/target/release/bundle/**/latest.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
