@@ -8,6 +8,7 @@
     "build": "tauri build",
     "build:frontend": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
+    "update-deps": "node scripts/update-deps.js",
     "tauri": "tauri"
   },
   "dependencies": {
