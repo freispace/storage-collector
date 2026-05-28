@@ -62,6 +62,10 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
+            // Hide from macOS Dock — run as a menu-bar-only app
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             let app_handle = app.handle().clone();
 
             // Resolve app data directory and initialise SQLite
@@ -114,6 +118,16 @@ pub fn run() {
             });
 
             app_handle.manage(state);
+
+            // On Linux/GTK `visible: false` in tauri.conf.json is not always
+            // honoured; hide both windows explicitly so they don't open on launch.
+            #[cfg(target_os = "linux")]
+            for label in ["settings", "logs"] {
+                if let Some(window) = app.get_webview_window(label) {
+                    let _ = window.hide();
+                }
+            }
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

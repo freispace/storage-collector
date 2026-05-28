@@ -54,6 +54,14 @@
     ],
     "resources": [],
     "externalBin": [],
+    "linux": {
+      "deb": {
+        "depends": ["libayatana-appindicator3-1"]
+      },
+      "rpm": {
+        "depends": ["libayatana-appindicator"]
+      }
+    },
     "copyright": "© Leonardo Re, freispace GmbH",
     "category": "Utility",
     "shortDescription": "Monitor folder sizes and submit to freispace",
