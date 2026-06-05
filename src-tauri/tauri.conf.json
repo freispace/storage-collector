@@ -69,7 +69,7 @@
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": ""
+      "timestampUrl": "http://time.certum.pl/"
     },
     "macOS": {
       "entitlements": null,
