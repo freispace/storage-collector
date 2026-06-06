@@ -22,6 +22,19 @@ function runText(cmd) {
   return execSync(cmd, { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" }).trim();
 }
 
+function localTagExists(tagName) {
+  try {
+    runText(`git rev-parse -q --verify refs/tags/${tagName}`);
+    return true;
+  } catch (error) {
+    // Exit code 1 means the ref does not exist, which is expected for new tags.
+    if (error?.status === 1) {
+      return false;
+    }
+    throw error;
+  }
+}
+
 function parseSemver(version) {
   const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
   if (!match) {
@@ -77,14 +90,8 @@ async function main() {
 
     const tagName = `v${nextVersion}`;
 
-    try {
-      runText(`git rev-parse -q --verify refs/tags/${tagName}`);
+    if (localTagExists(tagName)) {
       throw new Error(`Tag ${tagName} already exists locally.`);
-    } catch (error) {
-      const message = String(error?.message || "");
-      if (!message.includes("needed a single revision") && !message.includes("not a valid object name") && !message.includes("exit status 1")) {
-        throw error;
-      }
     }
 
     const remoteTags = runText("git ls-remote --tags origin");
