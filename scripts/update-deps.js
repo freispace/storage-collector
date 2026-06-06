@@ -8,9 +8,13 @@ import { join } from "path";
 const ROOT = new URL("..", import.meta.url).pathname.replace(/^\/([A-Z]:)/, "$1");
 const TAURI_DIR = join(ROOT, "src-tauri");
 
-function run(cmd, cwd = ROOT) {
+function run(cmd, cwd = ROOT, env = undefined) {
   console.log(`\n> ${cmd}`);
-  execSync(cmd, { cwd, stdio: "inherit" });
+  execSync(cmd, {
+    cwd,
+    stdio: "inherit",
+    env: env ? { ...process.env, ...env } : process.env,
+  });
 }
 
 function checkTool(cmd) {
@@ -69,7 +73,9 @@ const sqlxAvailable = (() => {
 })();
 
 if (sqlxAvailable) {
-  run("cargo sqlx prepare", TAURI_DIR);
+  // sqlx prepare needs a database URL at build time; use a local SQLite file.
+  const sqlxPrepareDbUrl = "sqlite://.sqlx-prepare.db?mode=rwc";
+  run("cargo sqlx prepare", TAURI_DIR, { DATABASE_URL: sqlxPrepareDbUrl });
   console.log("INFO: Remember to commit the updated .sqlx/ directory.");
 } else {
   console.log(

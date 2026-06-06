@@ -47,7 +47,7 @@ src-tauri/src/
 **sqlx offline mode** — `.sqlx/` query metadata is committed. CI uses `SQLX_OFFLINE=true`. After adding or changing any SQL query, regenerate:
 ```bash
 cd src-tauri
-cargo sqlx prepare
+$env:DATABASE_URL="sqlite://.sqlx-prepare.db?mode=rwc"; cargo sqlx prepare
 # commit the updated .sqlx/ directory
 ```
 
