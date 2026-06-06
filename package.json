@@ -1,6 +1,6 @@
 {
   "name": "freispace-storage-collector",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
@@ -9,6 +9,7 @@
     "build:frontend": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "update-deps": "node scripts/update-deps.js",
+    "release": "node scripts/release-version.js",
     "tauri": "tauri"
   },
   "dependencies": {
