@@ -1,6 +1,6 @@
 {
   "productName": "freispace Storage Collector",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "identifier": "com.freispace.storage-collector",
   "build": {
     "beforeDevCommand": "pnpm run dev:frontend",
@@ -56,10 +56,14 @@
     "externalBin": [],
     "linux": {
       "deb": {
-        "depends": ["libayatana-appindicator3-1"]
+        "depends": [
+          "libayatana-appindicator3-1"
+        ]
       },
       "rpm": {
-        "depends": ["libayatana-appindicator"]
+        "depends": [
+          "libayatana-appindicator"
+        ]
       }
     },
     "copyright": "© Leonardo Re, freispace GmbH",
