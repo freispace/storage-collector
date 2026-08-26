@@ -153,7 +153,7 @@
         style:background-color={projectColor ?? undefined}
         aria-hidden="true"
       ></span>
-      {#if projectNumber}
+      {#if projectNumber && projectNumber !== ""}
         <div
           class="inline-flex items-center rounded bg-gray-700 px-1.5 py-0.5 text-xs font-medium text-nowrap text-gray-300"
         >

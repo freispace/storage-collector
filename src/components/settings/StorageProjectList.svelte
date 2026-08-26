@@ -211,18 +211,18 @@
   });
 </script>
 
-<div class="h-full flex flex-col">
+<div class="h-full min-h-0 flex flex-col overflow-hidden">
   {#if loading}
     <div class="text-center py-8"><LoadingText /></div>
   {:else}
-    <div class="p-6 space-y-2">
+    <div class="shrink-0 p-6 space-y-2">
       {#if error}
         <div class="text-sm text-red-400 bg-red-900/20 rounded px-2 py-1">
           {error}
         </div>
       {/if}
 
-      <div class="flex items-center gap-2">
+      <div class="flex min-w-0 items-center gap-2">
         <button
           class="btn btn-ghost"
           onclick={() => loadAll(true)}
@@ -240,31 +240,37 @@
         </button>
 
         <!-- Add project dropdown -->
-        {#if availableItems.length > 0}
-          <select class="select flex-1" bind:value={selectedItemId}>
+        <select
+          class="select min-w-0 flex-1"
+          bind:value={selectedItemId}
+          disabled={availableItems.length === 0}
+        >
+          {#if availableItems.length === 0}
+            <option value="">No further projects</option>
+          {:else}
             <option value="">Select a storage project to add…</option>
             {#each availableItems as item (item.id)}
               <option value={item.id}>{itemLabel(item)}</option>
             {/each}
-          </select>
-          <button
-            class="btn btn-primary"
-            onclick={addProject}
-            disabled={!selectedItemId || addingProject}
+          {/if}
+        </select>
+        <button
+          class="btn btn-primary"
+          onclick={addProject}
+          disabled={!selectedItemId || addingProject}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4"
+            viewBox="0 0 16 16"
+            fill="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="size-4"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-            >
-              <path
-                d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
-              />
-            </svg>
-            <span>Add</span>
-          </button>
-        {/if}
+            <path
+              d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
+            />
+          </svg>
+          <span>Add</span>
+        </button>
       </div>
     </div>
 
@@ -280,7 +286,7 @@
         </div>
       {/if}
     {:else}
-      <div class="h-full overflow-y-scroll space-y-4 p-6">
+      <div class="min-h-0 flex-1 overflow-y-auto space-y-4 p-6">
         {#each activeItems as item (item.id)}
           <StorageProjectRow
             {item}

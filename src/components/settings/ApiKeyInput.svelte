@@ -129,9 +129,7 @@
       {/if}
     </div>
     <div class="text-gray-400 mt-2">
-      The API key requires the following permissions:
-      <span class="badge badge-sm font-mono">Projects : Update</span>
-      <span class="badge badge-sm font-mono">Storages : Update</span>
+      The API key requires <span class="badge badge-sm font-mono">Storage Statistics : Update</span> permissions.
     </div>
   {/if}
   {#if error}
