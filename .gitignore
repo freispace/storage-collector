@@ -6,6 +6,7 @@ Cargo.lock
 # Node
 node_modules/
 dist/
+.pnpm-store/
 
 # Tauri build output
 src-tauri/target/
@@ -27,6 +28,7 @@ desktop.ini
 
 # SQLx offline query cache (committed intentionally — see README)
 # .sqlx/  ← DO NOT ignore, this is needed for CI
+src-tauri/.sqlx-prepare.db
 
 # Build artifacts
 *.msi
